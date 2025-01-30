@@ -137,22 +137,36 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="chaser.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="interactable.cpp" />
+    <ClCompile Include="key.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="map.cpp" />
+    <ClCompile Include="mapEntities.cpp" />
+    <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="potion.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="threadManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="chaser.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="interactable.h" />
+    <ClInclude Include="key.h" />
+    <ClInclude Include="map.h" />
+    <ClInclude Include="mapEntities.h" />
+    <ClInclude Include="patrolling.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="potion.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="threadManager.h" />
   </ItemGroup>
