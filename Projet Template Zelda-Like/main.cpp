@@ -1,4 +1,4 @@
-#include <SFML/Graphics.hpp>
+#include "includes.h"
 
 int main() {
     // Création de la fenêtre
