@@ -53,7 +53,7 @@ void Game::updateAll() {
         player.potionUpdate(deltaTime);
 
         //COLLISIONS
-        if (!enemies.empty()) {
+        /*if (!enemies.empty()) {
             for (auto& enemy : enemies) {
                 enemy->update(deltaTime);
                 enemy->behavior(deltaTime, wallSprite, theMap.mapObjects, player);
@@ -62,24 +62,54 @@ void Game::updateAll() {
                     gameOver = true;
                 }
             }
-        }
-        if (!objects.empty()) {
-            for (auto& obj : objects) {
-                if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
-                    obj->interact(player);
+        }*/
+        if (!theMap.enemies.empty()) {
+            for (auto& enemyz : theMap.enemies) {
+                for (auto& enemy : enemyz) {
+                    enemy->update(deltaTime);
+                    enemy->behavior(deltaTime, wallSprite, theMap.mapObjects, player);
+                    if (player.sprite.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) {
+                        playing = false;
+                        gameOver = true;
+                    }
                 }
             }
         }
-        for (int i = 0; i < objects.size(); i++) {
+        /*if (!objects.empty()) {
+            for (auto& obj : objects) {
+                if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
+                    obj->interact(player, theMap.objects);
+                }
+            }
+        }*/
+        if (!theMap.objects.empty()) {
+            for (auto& objz : theMap.objects) {
+                for (auto& obj : objz) {
+                    if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
+                        obj->interact(player, theMap.objects);
+                    }
+                }
+            }
+        }
+       /* for (int i = 0; i < objects.size(); i++) {
             if (objects[i]->state == false) {
                 objects.erase(objects.begin() + i);
             }
         }
-        for (auto& wallz : theMap.mapObjects) {
+        for (int i = 0; i < theMap.objects.size(); i++) {
+            if (!theMap.objects[i].empty()) {
+                for (int y = 0; y < theMap.objects[i].size(); i++) {
+                    if (theMap.objects[i][y]->state == false) {
+                        theMap.objects[i].erase(theMap.objects[i].begin() + y);
+                    }
+                }
+            }
+        }*/
+        /*for (auto& wallz : theMap.mapObjects) {
             for (auto& wall : wallz) {
                 wallSprite.setPosition(wall->sprite.getPosition());
             }
-        }
+        }*/
 
         if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y
             || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
@@ -118,18 +148,36 @@ void Game::drawAll() {
         keyIcone.setTexture(keyTexture);
         if (player.key) window.draw(keyIcone);
         player.draw(window);
-        if (!enemies.empty()) {
+        /*if (!enemies.empty()) {
             for (auto& enemy : enemies) {
                 if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
                 else if (enemy->type == "patrolling") enemy->sprite.setTexture(patrollingTexture);
                 enemy->draw(window);
             }
+        }*/
+        if (!theMap.enemies.empty()) {
+            for (auto& enemyz : theMap.enemies) {
+                for (auto& enemy : enemyz) {
+                    if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
+                    else if (enemy->type == "patrolling") enemy->sprite.setTexture(patrollingTexture);
+                    enemy->draw(window);
+                }
+            }
         }
-        if (!objects.empty()) {
+        /*if (!objects.empty()) {
             for (auto& obj : objects) {
                 if (obj->type == "potion") obj->sprite.setTexture(potionTexture);
                 else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
                 window.draw(obj->sprite);
+            }
+        }*/
+        if (!theMap.objects.empty()) {
+            for (auto& objz : theMap.objects) {
+                for (auto& obj : objz) {
+                    if (obj->type == "potion") obj->sprite.setTexture(potionTexture);
+                    else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
+                    window.draw(obj->sprite);
+                }
             }
         }
     }
@@ -205,16 +253,19 @@ void Game::setupSpawns() {
 
 void Game::reset() {
     enemies.clear();
-    //theMap.enemies.clear();
+    theMap.enemies.clear();
     objects.clear();
+    theMap.objects.clear();
+    theMap.mapObjects.clear();
     player.sprite.setPosition(75, 75);
     player.potion = false;
     player.key = false;
-    setupSpawns();
+    //setupSpawns();
+    theMap.loadMap();
 }
 
 void Game::run() {
     loadTextures();
-    setupSpawns();
+    //setupSpawns();
     gameLoop();
 }

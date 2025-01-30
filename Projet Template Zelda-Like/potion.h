@@ -8,5 +8,5 @@ public:
 	Potion();
 	Potion(float xPos, float yPos);
 
-	void interact(Player& player) override;
+	void interact(Player& player, std::vector<std::vector<std::unique_ptr<Interactable>>>& mapObjects) override;
 };

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "mapEntities.h"
-#include "enemy.h"
+#include "chaser.h"
 #include "interactable.h"
 
 class Map {
