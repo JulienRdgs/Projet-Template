@@ -15,11 +15,9 @@ private:
 public:
 	bool start = true;
 	sf::RenderWindow window;
-	std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+	sf::View view;
 	Player player;
 	Map theMap;
-	/*std::vector<std::unique_ptr<Enemy>> enemies;
-	std::vector<std::unique_ptr<Interactable>> objects;*/
 	sf::Clock Clock;
 	float deltaTime = 0;
 	bool playing = false;
@@ -47,7 +45,7 @@ public:
 	sf::Text gameOverText;
 	sf::Text retryText;
 
-	Game();
+	Game(std::vector<sf::VideoMode> modes);
 
 	void loadTextures();
 	//void setupSpawns();

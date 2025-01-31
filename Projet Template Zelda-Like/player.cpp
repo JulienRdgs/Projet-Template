@@ -17,18 +17,17 @@ void Player::update(float deltaTime) {
 void Player::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }
-void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls) {
+void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view) {
     //MOUVEMENTS
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         sprite.move(0, speedY * deltaTime);
-        /*if (sprite.getGlobalBounds().intersects(wall.getGlobalBounds())) {
-            sprite.move(0, -speedY * deltaTime);
-        }*/
+        view.move(0, speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
                 if (wall->type == "wall" || (wall->type == "lock" && !key)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, -speedY * deltaTime);
+                        view.move(0, -speedY * deltaTime);
                     }
                 }
             }
@@ -36,14 +35,13 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
         sprite.move(0, -speedY * deltaTime);
-        /*if (sprite.getGlobalBounds().intersects(wall.getGlobalBounds())) {
-            sprite.move(0, speedY * deltaTime);
-        }*/
+        view.move(0, -speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
                 if (wall->type == "wall" || (wall->type == "lock" && !key)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, speedY * deltaTime);
+                        view.move(0, speedY * deltaTime);
                     }
                 }
             }
@@ -51,14 +49,13 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         sprite.move(-speedX * deltaTime, 0);
-        /*if (sprite.getGlobalBounds().intersects(wall.getGlobalBounds())) {
-            sprite.move(speedX * deltaTime, 0);
-        }*/
+        view.move(-speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
                 if (wall->type == "wall" || (wall->type == "lock" && !key)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(speedX * deltaTime, 0);
+                        view.move(speedX * deltaTime, 0);
                     }
                 }
             }
@@ -66,14 +63,13 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         sprite.move(speedX * deltaTime, 0);
-        /*if (sprite.getGlobalBounds().intersects(wall.getGlobalBounds())) {
-            sprite.move(-speedX * deltaTime, 0);
-        }*/
+        view.move(speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
                 if (wall->type == "wall" || (wall->type == "lock" && !key)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(-speedX * deltaTime, 0);
+                        view.move(-speedX * deltaTime, 0);
                     }
                 }
             }

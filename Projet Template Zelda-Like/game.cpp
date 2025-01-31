@@ -1,13 +1,13 @@
 #include "game.h"
 #include "menu.h"
 
-#include "game.h"
-
-Game::Game() : window(sf::VideoMode(1200,800), "Escape the Dungeon")/*window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen)*/, 
-player(75, 75), volume(50) {
+Game::Game(std::vector<sf::VideoMode> modes) : /*window(sf::VideoMode(1920,1080), "Escape the Dungeon", sf::Style::Fullscreen)*/
+    window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen),
+player(75, 75), volume(50), view(sf::Vector2f(75.f, 75.f), sf::Vector2f((float)modes[9].width, (float)modes[9].height)) { //modes[9].width = 1280, modes[9].height = 800
 }
 
 void Game::showMenu() {
+    window.setView(window.getDefaultView());
     Menu menu(window.getSize().x, window.getSize().y);
 
     while (window.isOpen()) {
@@ -75,6 +75,7 @@ void Game::loadFont() {
 }
 
 void Game::showOptionsMenu() {
+    window.setView(window.getDefaultView());
     bool inOptionsMenu = true;
 
     volumeText.setFont(baseFont);
@@ -160,7 +161,14 @@ void Game::pollEvent() {
             window.close();
         if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Escape) {
-                if (gameOver) window.close();
+                //AFFICHER OPTIONS
+            }
+            if (event.key.code == sf::Keyboard::X) { //TEMPORAIRE
+                /*playing = false;
+                win = false;
+                gameOver = false;
+                showMenu();*/
+                window.close();
             }
         }
         if (event.type == sf::Event::MouseButtonPressed) {
@@ -202,9 +210,10 @@ void Game::pollEvent() {
 
 void Game::updateAll() {
     if (playing) {
+        view.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
         //deltaTime = Clock.restart().asSeconds();
         player.update(deltaTime);
-        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects);
+        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view);
         player.potionTimer += deltaTime;
         player.potionUpdate(deltaTime);
 
@@ -238,7 +247,7 @@ void Game::updateAll() {
             }
         }
 
-        if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y
+        if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
             || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
             win = true;
             playing = false;
@@ -249,6 +258,7 @@ void Game::updateAll() {
 void Game::drawAll() {
     window.clear();
     if (playing) {
+        window.setView(view);
         if (!theMap.mapObjects.empty()) {
             for (auto& objz : theMap.mapObjects) {
                 for (auto& obj : objz) {
@@ -295,11 +305,13 @@ void Game::drawAll() {
         }
     }
     if (win) {
+        window.setView(window.getDefaultView());
         window.draw(winText);
         window.draw(retryText);
         window.draw(menuText);
     }
     if (gameOver) {
+        window.setView(window.getDefaultView());
         window.draw(gameOverText);
         window.draw(retryText);
         window.draw(menuText);

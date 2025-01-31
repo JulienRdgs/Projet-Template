@@ -2,7 +2,9 @@
 
 int main() {
     srand(time(NULL));
-    Game game;
+
+    std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+    Game game(modes);
     game.run();
 
     return 0;

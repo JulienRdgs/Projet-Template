@@ -17,7 +17,7 @@ void Map::loadMap() {
 	int yEnemy = 0;
 	int yInteractables = 0;
 	while (getline(mapFile, line)) {
-		for (int i = 0; i < 24; i++) {
+		for (int i = 0; i < line.size(); i++) {
 			if (line[i] == '#') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("wall", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
