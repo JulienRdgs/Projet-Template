@@ -38,6 +38,7 @@ public:
 
 	sf::Font baseFont;
 	sf::Text winText;
+	sf::Text menuText;
 	sf::Text gameOverText;
 	sf::Text retryText;
 

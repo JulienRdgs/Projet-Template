@@ -3,6 +3,48 @@
 Game::Game() : window(sf::VideoMode(1200, 800), "Escape the Dungeon"), player(75, 75) {
 }
 
+void Game::showMenu() {
+    Menu menu(window.getSize().x, window.getSize().y);
+
+    while (window.isOpen()) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Up)
+                    menu.moveUp();
+                if (event.key.code == sf::Keyboard::Down)
+                    menu.moveDown();
+                if (event.key.code == sf::Keyboard::Enter) {
+                    int selection = menu.getSelectedIndex();
+                    if (selection == 0) return;
+                    if (selection == 1) std::cout << "Options sélectionnées" << std::endl;
+                    if (selection == 2) window.close();
+                }
+            }
+
+            if (event.type == sf::Event::MouseMoved) {
+                menu.handleMouseHover(window);
+            }
+
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    int selection = menu.handleMouseClick(window);
+                    if (selection == 0) return;
+                    if (selection == 1) std::cout << "Options sélectionnées" << std::endl;
+                    if (selection == 2) window.close();
+                }
+            }
+        }
+
+        window.clear();
+        menu.draw(window);
+        window.display();
+    }
+}
+
 void Game::gameLoop() {
     while (window.isOpen()) {
         deltaTime = Clock.restart().asSeconds();
@@ -31,13 +73,28 @@ void Game::pollEvent() {
                         gameOver = false;
                         playing = true;
                     }
+                    else if (menuText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+                        win = false;
+                        gameOver = false;
+                        showMenu();  // Retourner au menu principal
+                    }
                 }
             }
         }
         if (event.type == sf::Event::MouseMoved) {
-            if (gameOver) {
-                if (retryText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
-                    retryText.setFillColor(sf::Color::Yellow); //ne fonctionne pas
+            if (gameOver || win) {
+                if (retryText.getGlobalBounds().contains((float)event.mouseMove.x, (float)event.mouseMove.y)) {
+                    retryText.setFillColor(sf::Color::Yellow);
+                }
+                else {
+                    retryText.setFillColor(sf::Color::White);
+                }
+
+                if (menuText.getGlobalBounds().contains((float)event.mouseMove.x, (float)event.mouseMove.y)) {
+                    menuText.setFillColor(sf::Color::Yellow);
+                }
+                else {
+                    menuText.setFillColor(sf::Color::White);
                 }
             }
         }
@@ -184,10 +241,12 @@ void Game::drawAll() {
     if (win) {
         window.draw(winText);
         window.draw(retryText);
+        window.draw(menuText);
     }
     if (gameOver) {
         window.draw(gameOverText);
         window.draw(retryText);
+        window.draw(menuText);
     }
     window.display();
 }
@@ -225,6 +284,15 @@ void Game::loadTextures() {
     retryText.setPosition((window.getSize().x - retryText.getGlobalBounds().width) / 2,
         gameOverText.getPosition().y + gameOverText.getCharacterSize() + window.getSize().y * 0.1);
     retryText.setFillColor(sf::Color::White);
+
+    menuText.setFont(baseFont);
+    menuText.setString("MENU");
+    menuText.setCharacterSize(50);
+    menuText.setPosition(
+        (window.getSize().x - menuText.getGlobalBounds().width) / 2,
+        retryText.getPosition().y + retryText.getCharacterSize() + 20
+    );
+    menuText.setFillColor(sf::Color::White);
 
     keyIcone.setTexture(keyTexture);
     keyIcone.setScale(0.075, 0.075);
@@ -265,6 +333,7 @@ void Game::reset() {
 }
 
 void Game::run() {
+    showMenu();
     loadTextures();
     //setupSpawns();
     gameLoop();

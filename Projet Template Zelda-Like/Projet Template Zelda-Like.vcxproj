@@ -146,6 +146,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="mapEntities.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="player.cpp" />
@@ -163,6 +164,7 @@
     <ClInclude Include="key.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="mapEntities.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="player.h" />
