@@ -20,7 +20,7 @@ public:
 	std::vector<std::unique_ptr<Interactable>> objects;
 	sf::Clock Clock;
 	float deltaTime = 0;
-	bool playing = true;
+	bool playing = false;
 	bool win = false;
 	bool gameOver = false;
 

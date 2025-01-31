@@ -22,9 +22,11 @@ void Game::showMenu() {
                     menu.moveDown();
                 if (event.key.code == sf::Keyboard::Enter) {
                     int selection = menu.getSelectedIndex();
-                    if (selection == 0) {
+                    if (selection == 0)
+                    {
                         reset();
-                        gameLoop();
+                        playing = true;
+                        return;
                     }
                     if (selection == 1) {
                         showOptionsMenu();
@@ -42,9 +44,11 @@ void Game::showMenu() {
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     int selection = menu.handleMouseClick(window);
-                    if (selection == 0) {
+                    if (selection == 0)
+                    {
                         reset();
-                        gameLoop();
+                        playing = true;
+                        return;
                     }
                     if (selection == 1) {
                         showOptionsMenu();
