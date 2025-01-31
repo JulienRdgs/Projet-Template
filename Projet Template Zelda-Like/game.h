@@ -10,6 +10,8 @@
 
 
 class Game {
+private:
+	float volume;
 public:
 	sf::RenderWindow window;
 	Player player;
@@ -39,6 +41,7 @@ public:
 	sf::Font baseFont;
 	sf::Text winText;
 	sf::Text menuText;
+	sf::Text volumeText;
 	sf::Text gameOverText;
 	sf::Text retryText;
 
@@ -49,6 +52,8 @@ public:
 	void gameLoop();
 	void pollEvent();
 	void showMenu();
+	void loadFont();
+	void showOptionsMenu();
 	void updateAll();
 	void drawAll();
 	void reset();

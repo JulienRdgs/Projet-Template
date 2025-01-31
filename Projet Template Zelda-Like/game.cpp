@@ -1,7 +1,9 @@
 #include "game.h"
 #include "menu.h"
 
-Game::Game() : window(sf::VideoMode(1200, 800), "Escape the Dungeon"), player(75, 75) {
+#include "game.h"
+
+Game::Game() : window(sf::VideoMode(1200, 800), "Escape the Dungeon"), player(75, 75), volume(50) {
 }
 
 void Game::showMenu() {
@@ -20,9 +22,16 @@ void Game::showMenu() {
                     menu.moveDown();
                 if (event.key.code == sf::Keyboard::Enter) {
                     int selection = menu.getSelectedIndex();
-                    if (selection == 0) return;
-                    if (selection == 1) std::cout << "Options sélectionnées" << std::endl;
-                    if (selection == 2) window.close();
+                    if (selection == 0) {
+                        reset();
+                        gameLoop();
+                    }
+                    if (selection == 1) {
+                        showOptionsMenu();
+                    }
+                    if (selection == 2) {
+                        window.close();
+                    }
                 }
             }
 
@@ -33,15 +42,98 @@ void Game::showMenu() {
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
                     int selection = menu.handleMouseClick(window);
-                    if (selection == 0) return;
-                    if (selection == 1) std::cout << "Options sélectionnées" << std::endl;
-                    if (selection == 2) window.close();
+                    if (selection == 0) {
+                        reset();
+                        gameLoop();
+                    }
+                    if (selection == 1) {
+                        showOptionsMenu();
+                    }
+                    if (selection == 2) {
+                        window.close();
+                    }
                 }
             }
         }
 
         window.clear();
         menu.draw(window);
+        window.display();
+    }
+}
+
+void Game::loadFont() {
+    if (!baseFont.loadFromFile("assets/Arial.ttf")) {
+        std::cout << "Erreur de chargement de la police !" << std::endl;
+    }
+}
+
+void Game::showOptionsMenu() {
+    bool inOptionsMenu = true;
+
+    volumeText.setFont(baseFont);
+    volumeText.setString("Volume :");
+    volumeText.setCharacterSize(80);
+    volumeText.setFillColor(sf::Color::White);
+    volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
+
+    sf::RectangleShape volumeBar(sf::Vector2f(400, 10));
+    volumeBar.setPosition(window.getSize().x / 2 - volumeBar.getSize().x / 2, window.getSize().y / 2);
+    volumeBar.setFillColor(sf::Color(100, 100, 100));
+
+    sf::CircleShape volumeHandle(15);
+    volumeHandle.setPosition(window.getSize().x / 2 - volumeHandle.getRadius() + (volume / 100.f) * volumeBar.getSize().x, window.getSize().y / 2 - volumeHandle.getRadius());
+    volumeHandle.setFillColor(sf::Color::Red);
+
+    bool isDragging = false;
+
+    while (inOptionsMenu) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Escape) {
+                    inOptionsMenu = false;
+                }
+            }
+            if (event.type == sf::Event::MouseButtonPressed) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    if (volumeHandle.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                        isDragging = true;
+                    }
+                }
+            }
+            if (event.type == sf::Event::MouseButtonReleased) {
+                if (event.mouseButton.button == sf::Mouse::Left) {
+                    isDragging = false;
+                }
+            }
+            if (event.type == sf::Event::MouseMoved) {
+                if (isDragging) {
+                    float newX = event.mouseMove.x - volumeHandle.getRadius();
+                    if (newX < volumeBar.getPosition().x) {
+                        newX = volumeBar.getPosition().x;
+                    }
+                    else if (newX > volumeBar.getPosition().x + volumeBar.getSize().x - volumeHandle.getRadius() * 2) {
+                        newX = volumeBar.getPosition().x + volumeBar.getSize().x - volumeHandle.getRadius() * 2;
+                    }
+                    volumeHandle.setPosition(newX, volumeHandle.getPosition().y);
+
+                    volume = (newX - volumeBar.getPosition().x) / volumeBar.getSize().x * 100.f;
+                }
+            }
+        }
+
+        volumeText.setString("Volume: " + std::to_string(static_cast<int>(volume)) + "%");
+
+        volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
+
+        window.clear();
+        window.draw(volumeText);
+        window.draw(volumeBar);
+        window.draw(volumeHandle);
         window.display();
     }
 }
@@ -149,25 +241,25 @@ void Game::updateAll() {
                 }
             }
         }
-       /* for (int i = 0; i < objects.size(); i++) {
-            if (objects[i]->state == false) {
-                objects.erase(objects.begin() + i);
-            }
-        }
-        for (int i = 0; i < theMap.objects.size(); i++) {
-            if (!theMap.objects[i].empty()) {
-                for (int y = 0; y < theMap.objects[i].size(); i++) {
-                    if (theMap.objects[i][y]->state == false) {
-                        theMap.objects[i].erase(theMap.objects[i].begin() + y);
-                    }
-                }
-            }
-        }*/
-        /*for (auto& wallz : theMap.mapObjects) {
-            for (auto& wall : wallz) {
-                wallSprite.setPosition(wall->sprite.getPosition());
-            }
-        }*/
+        /* for (int i = 0; i < objects.size(); i++) {
+             if (objects[i]->state == false) {
+                 objects.erase(objects.begin() + i);
+             }
+         }
+         for (int i = 0; i < theMap.objects.size(); i++) {
+             if (!theMap.objects[i].empty()) {
+                 for (int y = 0; y < theMap.objects[i].size(); i++) {
+                     if (theMap.objects[i][y]->state == false) {
+                         theMap.objects[i].erase(theMap.objects[i].begin() + y);
+                     }
+                 }
+             }
+         }*/
+         /*for (auto& wallz : theMap.mapObjects) {
+             for (auto& wall : wallz) {
+                 wallSprite.setPosition(wall->sprite.getPosition());
+             }
+         }*/
 
         if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y
             || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
