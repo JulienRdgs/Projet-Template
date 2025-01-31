@@ -5,6 +5,7 @@
 class Enemy : public Entity {
 public:
 	std::string type;
+	bool state = true;
 
 	Enemy();
 	~Enemy();

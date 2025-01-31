@@ -10,7 +10,7 @@ Potion::Potion(float xPos, float yPos) {
 	posY = yPos;
 }
 
-void Potion::interact(Player& player, std::vector<std::vector<std::unique_ptr<Interactable>>>& mapObjects) {
+void Potion::interact(Player& player, std::vector<std::unique_ptr<Interactable>>& mapObjects) {
 	if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 		player.potion = true;
 		state = false;

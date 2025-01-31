@@ -14,7 +14,7 @@ PatrollingEnemy::PatrollingEnemy(float xPos, float yPos) {
 
 void PatrollingEnemy::behavior(float& deltaTime, sf::Sprite& daWall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {
     sprite.move(speedX * deltaTime, speedY * deltaTime);
-
+ 
     for (auto& wallz : walls) {
         for (auto& wall : wallz) {
             if (wall->type == "wall") {
@@ -25,15 +25,10 @@ void PatrollingEnemy::behavior(float& deltaTime, sf::Sprite& daWall, std::vector
         }
     }
     if (touchedWall) {
-        /*speedY = changeY[rand() % 2];
-        speedX = changeX[rand() % 2];*/
-        speedY = -speedY;
-        speedX = -speedX;
+        /*speedY = -speedY;
+        speedX = -speedX;*/
+        speedX = randomSpeed[rand() % 6];
+        speedY = randomSpeed[rand() % 6];
     }
     touchedWall = false;
-
-    /*if (sprite.getGlobalBounds().intersects(daWall.getGlobalBounds())) {
-        speedY = -speedY;
-        speedX = -speedX;
-    }*/
 }

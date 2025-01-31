@@ -12,6 +12,6 @@ public:
 
 	Interactable();
 
-	virtual void interact(Player& player, std::vector<std::vector<std::unique_ptr<Interactable>>>& mapObjects) = 0;
+	virtual void interact(Player& player, std::vector<std::unique_ptr<Interactable>>& mapObjects) = 0;
 	//void destroy(std::vector<Interactable>& objects);
 };

@@ -11,7 +11,7 @@ Key::Key(float xPos, float yPos) {
 	posY = yPos;
 }
 
-void Key::interact(Player& player, std::vector<std::vector<std::unique_ptr<Interactable>>>& mapObjects) {
+void Key::interact(Player& player, std::vector<std::unique_ptr<Interactable>>& mapObjects) {
 	if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 		player.key = true;
 		state = false;

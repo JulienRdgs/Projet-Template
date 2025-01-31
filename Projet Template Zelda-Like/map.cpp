@@ -4,10 +4,10 @@
 Map::Map() {}
 
 void Map::loadMap() {
-	sf::Texture wallTexture;
-	sf::Texture paveTexture;
-	wallTexture.loadFromFile("assets/wall.png");
-	paveTexture.loadFromFile("assets/pave.png");
+	//sf::Texture wallTexture;
+	//sf::Texture paveTexture;
+	//wallTexture.loadFromFile("assets/wall.png");
+	//paveTexture.loadFromFile("assets/pave.png");
 
 	/*mapFile.clear();
 	mapFile.seekg(0, mapFile.beg);
@@ -36,29 +36,29 @@ void Map::loadMap() {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
 
-				enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
-				enemies[yEnemy].emplace_back(std::make_unique<ChaserEnemy>((float)i * 50.f, (float)y * 50.f));
+				//enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
+				enemies.emplace_back(std::make_unique<ChaserEnemy>((float)i * 50.f, (float)y * 50.f));
 				yEnemy++;
 			}
 			else if (line[i] == 'p') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
-				enemies[yEnemy].emplace_back(std::make_unique<PatrollingEnemy>((float)i * 50.f, (float)y * 50.f));
+				//enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
+				enemies.emplace_back(std::make_unique<PatrollingEnemy>((float)i * 50.f, (float)y * 50.f));
 				yEnemy++;
 			}
 			else if (line[i] == 's') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
-				objects[yInteractables].emplace_back(std::make_unique<Potion>((float)i * 50.f, (float)y * 50.f));
+				//objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
+				objects.emplace_back(std::make_unique<Potion>((float)i * 50.f, (float)y * 50.f));
 				yInteractables++;
 			}
 			else if (line[i] == 'k') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
-				objects[yInteractables].emplace_back(std::make_unique<Key>((float)i * 50.f, (float)y * 50.f));
+				//objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
+				objects.emplace_back(std::make_unique<Key>((float)i * 50.f, (float)y * 50.f));
 				yInteractables++;
 			}
 		}

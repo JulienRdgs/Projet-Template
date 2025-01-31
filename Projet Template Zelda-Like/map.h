@@ -8,8 +8,8 @@ class Map {
 public:
 	std::ifstream mapFile;
 	std::vector<std::vector<std::unique_ptr<MapEntities>>> mapObjects;
-	std::vector<std::vector<std::unique_ptr<Enemy>>> enemies;
-	std::vector<std::vector<std::unique_ptr<Interactable>>> objects;
+	std::vector<std::unique_ptr<Enemy>> enemies;
+	std::vector<std::unique_ptr<Interactable>> objects;
 
 	std::string line;
 
