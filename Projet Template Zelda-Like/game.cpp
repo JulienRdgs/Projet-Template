@@ -1,4 +1,5 @@
 #include "game.h"
+#include "menu.h"
 
 Game::Game() : window(sf::VideoMode(1200, 800), "Escape the Dungeon"), player(75, 75) {
 }

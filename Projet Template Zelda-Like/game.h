@@ -48,6 +48,7 @@ public:
 	void setupSpawns();
 	void gameLoop();
 	void pollEvent();
+	void showMenu();
 	void updateAll();
 	void drawAll();
 	void reset();
