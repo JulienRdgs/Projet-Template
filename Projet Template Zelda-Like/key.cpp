@@ -4,7 +4,7 @@
 Key::Key() {
 	type = "key";
 }
-Key::Key(float xPos, float yPos) {
+Key::Key(std::string keyNumber, float xPos, float yPos) {
 	type = "key";
 	sprite.setPosition(xPos, yPos);
 	posX = xPos;
@@ -13,7 +13,7 @@ Key::Key(float xPos, float yPos) {
 
 void Key::interact(Player& player, std::vector<std::unique_ptr<Interactable>>& mapObjects) {
 	if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
-		player.key = true;
+		player.key1 = true;
 		state = false;
 	}
 }

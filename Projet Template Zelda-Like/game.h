@@ -32,6 +32,8 @@ public:
 	sf::Texture wallTexture;
 	sf::Texture floorTexture;
 	sf::Texture lockTexture;
+	sf::Texture checkpointTexture;
+	sf::Texture checkpointOnTexture;
 
 	sf::Sprite keyIcone;
 	sf::Sprite wallSprite;

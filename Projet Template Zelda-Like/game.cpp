@@ -2,8 +2,7 @@
 #include "menu.h"
 
 Game::Game(std::vector<sf::VideoMode> modes) : /*window(sf::VideoMode(1920,1080), "Escape the Dungeon", sf::Style::Fullscreen)*/
-    window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen),
-player(75, 75), volume(50), view(sf::Vector2f(75.f, 75.f), sf::Vector2f((float)modes[9].width, (float)modes[9].height)) { //modes[9].width = 1280, modes[9].height = 800
+    window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen), volume(50), view(sf::Vector2f(75.f, 75.f), sf::Vector2f((float)modes[9].width, (float)modes[9].height)) { //modes[9].width = 1280, modes[9].height = 800
 }
 
 void Game::showMenu() {
@@ -213,7 +212,7 @@ void Game::updateAll() {
         view.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
         //deltaTime = Clock.restart().asSeconds();
         player.update(deltaTime);
-        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view);
+        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies);
         player.potionTimer += deltaTime;
         player.potionUpdate(deltaTime);
 
@@ -252,6 +251,11 @@ void Game::updateAll() {
             win = true;
             playing = false;
         }
+        // UPDATE LA POSITION DE L'ICONE KEY (quand le joueur possède une clé) EN HAUT A GAUCHE DE L'ECRAN
+        keyIcone.setPosition(player.sprite.getPosition().x + (player.sprite.getGlobalBounds().width * player.sprite.getScale().x)/2 - view.getSize().x / 2
+        + keyIcone.getGlobalBounds().width * keyIcone.getScale().x,
+        player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
+        + keyIcone.getGlobalBounds().height * keyIcone.getScale().y); 
     }
 }
 
@@ -262,20 +266,18 @@ void Game::drawAll() {
         if (!theMap.mapObjects.empty()) {
             for (auto& objz : theMap.mapObjects) {
                 for (auto& obj : objz) {
-                    /*if (obj->type == "wall") {
-                        wallSprite.setScale(obj->sprite.getScale());
-                        wallSprite.setPosition(obj->sprite.getPosition());
-                        window.draw(wallSprite);
-                    }
-                    else if (obj->type == "floor") {
-                        floorSprite.setScale(obj->sprite.getScale());
-                        floorSprite.setPosition(obj->sprite.getPosition());
-                        window.draw(floorSprite);
-                    }*/
                     if (obj->type == "wall") {
                         obj->sprite.setTexture(wallTexture);
                     }
                     else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
+                    else if (obj->type == "checkpoint") { 
+                        if (obj->sprite.getPosition() == player.checkpoint) {
+                            obj->sprite.setTexture(checkpointOnTexture);
+                        }
+                        else {
+                            obj->sprite.setTexture(checkpointTexture);
+                        }
+                    }
                     else if (obj->type == "lock") obj->sprite.setTexture(lockTexture);
                     window.draw(obj->sprite);
                 }
@@ -283,7 +285,7 @@ void Game::drawAll() {
         }
         player.sprite.setTexture(playerTexture);
         keyIcone.setTexture(keyTexture);
-        if (player.key) window.draw(keyIcone);
+        if (player.key1) window.draw(keyIcone);
         player.draw(window);
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
@@ -329,6 +331,8 @@ void Game::loadTextures() {
     wallTexture.loadFromFile("assets/wall.png");
     floorTexture.loadFromFile("assets/floor.png");
     lockTexture.loadFromFile("assets/lock.png");
+    checkpointTexture.loadFromFile("assets/checkpoint.png");
+    checkpointOnTexture.loadFromFile("assets/checkpointOn.png");
 
     baseFont.loadFromFile("assets/Arial.ttf");
 
@@ -364,7 +368,7 @@ void Game::loadTextures() {
 
     keyIcone.setTexture(keyTexture);
     keyIcone.setScale(0.075, 0.075);
-    keyIcone.setPosition(0, 0);
+    
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);
     lockSprite.setTexture(lockTexture);
@@ -391,11 +395,11 @@ void Game::reset() {
     //objects.clear();
     theMap.objects.clear();
     theMap.mapObjects.clear();
-    player.sprite.setPosition(75, 75);
+    player.sprite.setPosition(player.checkpoint);
     player.potion = false;
-    player.key = false;
+    //player.key1 = false; //jsp si on garde la/les clé en cas de gameover
     //setupSpawns();
-    theMap.loadMap();
+    theMap.loadMap(player);
 
 }
 

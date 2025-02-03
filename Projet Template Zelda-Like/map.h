@@ -3,6 +3,7 @@
 #include "mapEntities.h"
 #include "chaser.h"
 #include "interactable.h"
+#include "player.h"
 
 class Map {
 public:
@@ -15,5 +16,5 @@ public:
 
 	Map();
 
-	void loadMap();
+	void loadMap(Player& player);
 };

@@ -11,11 +11,13 @@ public:
 	bool potion = false;
 	float potionTimer = 0;
 	float baseSpeed = 300;
-	bool key = false;
+	bool key1 = false;
+	bool lock1opened = false;
 	sf::RectangleShape attackArea;
 	sf::Vector2f playerPos;
+	sf::Vector2f checkpoint = { 75, 75 };
 
-	Player(float posX, float posY);
+	Player();
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window) override;
 

@@ -2,11 +2,10 @@
 #include "game.h"
 #include "mapEntities.h"
 
-Player::Player(float xPos, float yPos) {
+Player::Player() {
     sprite.setScale(0.09f, 0.09f);
-    sprite.setPosition({ xPos, yPos });
-    posX = xPos;
-    posY = yPos;
+    posX = checkpoint.x;
+    posY = checkpoint.y;
     speedX = baseSpeed;
     speedY = baseSpeed;
 
@@ -60,7 +59,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(0, speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, -speedY * deltaTime);
                         view.move(0, -speedY * deltaTime);
@@ -74,7 +73,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(0, -speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, speedY * deltaTime);
                         view.move(0, speedY * deltaTime);
@@ -88,7 +87,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(-speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(speedX * deltaTime, 0);
                         view.move(speedX * deltaTime, 0);
@@ -102,10 +101,37 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(-speedX * deltaTime, 0);
                         view.move(-speedX * deltaTime, 0);
+                    }
+                }
+            }
+        }
+    }
+    //INTERAGIR
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::E)) {
+        for (auto& wallz : walls) {
+            for (auto& wall : wallz) {
+                if (wall->type == "checkpoint") {
+                    if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
+                        checkpoint = wall->sprite.getPosition();
+                    }
+                }
+            }
+        }
+    }
+
+    //OUVRIR PORTE
+    if (key1) {
+        for (int i = 0; i < walls.size(); i++) {
+            for (int y = 0; y < walls[i].size(); y++) {
+                if (sprite.getGlobalBounds().intersects(walls[i][y]->sprite.getGlobalBounds())) {
+                    if (walls[i][y]->type == "lock") {
+                        walls[i].erase(walls[i].begin() + y);
+                        lock1opened = true;
+                        key1 = false;
                     }
                 }
             }
