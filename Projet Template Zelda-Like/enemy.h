@@ -17,6 +17,6 @@ public:
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window) override;
 
-	virtual void behavior(float& deltaTime, sf::Sprite& daWall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player);
+	virtual void behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player);
 	virtual void takeDamage(int damage);
 };

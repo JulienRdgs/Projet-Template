@@ -14,8 +14,33 @@ Player::Player() {
     attackArea.setOrigin(attackArea.getSize().x / 2, attackArea.getSize().y / 2);
 }
 void Player::update(float deltaTime) {
+    //AU CAS OU
     posX = sprite.getPosition().x;
     posY = sprite.getPosition().y;
+    //POTION UPDATE
+    potionTimer += deltaTime;
+    if (potion) {
+        //sprite.setColor(sf::Color(24, 202, 237));  //TROUVER AUTRE CHOSE A AFFICHER QUAND POTION ACTIVE
+        speedX = baseSpeed * 1.75f;
+        speedY = baseSpeed * 1.75f;
+        if (potionTimer >= 5) potion = false;
+    }
+    else {
+        //sprite.setColor(sf::Color::White);
+        potionTimer = 0;
+        speedX = baseSpeed;
+        speedY = baseSpeed;
+    }
+    //HIT DETECTION
+    if (gotHit) {
+        sprite.setColor(sf::Color::Red);
+        invincibleTimer += deltaTime;
+        if (invincibleTimer > invincibleLimit) gotHit = false;
+    }
+    else {
+        sprite.setColor(sf::Color::White);
+        invincibleTimer = 0;
+    }
 }
 void Player::draw(sf::RenderWindow& window) 
 {
@@ -117,6 +142,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
                 if (wall->type == "checkpoint") {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         checkpoint = wall->sprite.getPosition();
+                        checkpointUpdate();
                     }
                 }
             }
@@ -139,17 +165,17 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
 }
 
-void Player::potionUpdate(float deltaTime) {
-    if (potion) {
-        sprite.setColor(sf::Color(24, 202, 237));
-        speedX = baseSpeed * 1.75f;
-        speedY = baseSpeed * 1.75f;
-        if (potionTimer >= 5) potion = false;
-    }
-    else {
-        sprite.setColor(sf::Color::White);
-        potionTimer = 0;
-        speedX = baseSpeed;
-        speedY = baseSpeed;
-    }
+void Player::checkpointUpdate() {
+    checkpointHp = hp;
+    checkpointKey1 = key1;
+    checkpointLock1opened = lock1opened;
+}
+
+void Player::checkpointResetPlayer() {
+    hp = checkpointHp;
+    key1 = checkpointKey1;
+    //key1 = false;
+    lock1opened = checkpointLock1opened;
+    sprite.setPosition(checkpoint);
+    potion = false;
 }

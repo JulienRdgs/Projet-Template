@@ -12,5 +12,5 @@ public:
 
 	ChaserEnemy(float xPos, float yPos);
 
-	void behavior(float& deltaTime, sf::Sprite& daWall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) override;
+	void behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) override;
 };

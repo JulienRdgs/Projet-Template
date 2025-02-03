@@ -30,8 +30,6 @@ void Map::loadMap(Player& player) {
 			else if (line[i] == 'c') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-
-				//enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
 				enemies.emplace_back(std::make_unique<ChaserEnemy>((float)i * 50.f, (float)y * 50.f));
 				yEnemy++;
 			}
@@ -39,7 +37,6 @@ void Map::loadMap(Player& player) {
 			else if (line[i] == 'p') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				//enemies.emplace_back(std::vector<std::unique_ptr<Enemy>>());
 				enemies.emplace_back(std::make_unique<PatrollingEnemy>((float)i * 50.f, (float)y * 50.f));
 				yEnemy++;
 			}
@@ -47,7 +44,6 @@ void Map::loadMap(Player& player) {
 			else if (line[i] == 's') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				//objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
 				objects.emplace_back(std::make_unique<Potion>((float)i * 50.f, (float)y * 50.f));
 				yInteractables++;
 			}
@@ -55,7 +51,6 @@ void Map::loadMap(Player& player) {
 			else if (line[i] == 'k') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				//objects.emplace_back(std::vector<std::unique_ptr<Interactable>>());
 				if (/*player.key1 == false ||*/ player.lock1opened == false) {
 					objects.emplace_back(std::make_unique<Key>("key1", (float)i * 50.f, (float)y * 50.f));
 				}

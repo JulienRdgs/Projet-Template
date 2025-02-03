@@ -23,6 +23,7 @@ public:
 	bool playing = false;
 	bool win = false;
 	bool gameOver = false;
+	bool pause = false;
 
 	sf::Texture playerTexture;
 	sf::Texture chaserTexture;
@@ -36,6 +37,7 @@ public:
 	sf::Texture checkpointOnTexture;
 
 	sf::Sprite keyIcone;
+	sf::Sprite speedIcone;
 	sf::Sprite wallSprite;
 	sf::Sprite floorSprite;
 	sf::Sprite lockSprite;
@@ -46,6 +48,8 @@ public:
 	sf::Text volumeText;
 	sf::Text gameOverText;
 	sf::Text retryText;
+	sf::Text reprendreText;
+	sf::Text optionText;
 
 	Game(std::vector<sf::VideoMode> modes);
 

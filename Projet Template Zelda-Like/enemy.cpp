@@ -14,7 +14,7 @@ void Enemy::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }
 
-void Enemy::behavior(float& deltaTime, sf::Sprite& daWall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {}
+void Enemy::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {}
 
 void Enemy::takeDamage(int damage) 
 {

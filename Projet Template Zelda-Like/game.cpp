@@ -160,7 +160,10 @@ void Game::pollEvent() {
             window.close();
         if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Escape) {
-                //AFFICHER OPTIONS
+                if (playing) {
+                    pause = true;
+                    playing = false;
+                }
             }
             if (event.key.code == sf::Keyboard::X) { //TEMPORAIRE
                 /*playing = false;
@@ -177,18 +180,35 @@ void Game::pollEvent() {
                         reset();
                         win = false;
                         gameOver = false;
+                        pause = false;
                         playing = true;
                     }
                     else if (menuText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
                         win = false;
                         gameOver = false;
+                        pause = false;
+                        showMenu();  // Retourner au menu principal
+                    }
+                }
+                if (pause) {
+                    if (reprendreText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+                        playing = true;
+                        pause = false;
+                    }
+                    else if (optionText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+                        showOptionsMenu();
+                    }
+                    else if (menuText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+                        win = false;
+                        gameOver = false;
+                        pause = false;
                         showMenu();  // Retourner au menu principal
                     }
                 }
             }
         }
         if (event.type == sf::Event::MouseMoved) {
-            if (gameOver || win) {
+            if (gameOver || win || pause) {
                 if (retryText.getGlobalBounds().contains((float)event.mouseMove.x, (float)event.mouseMove.y)) {
                     retryText.setFillColor(sf::Color::Yellow);
                 }
@@ -202,6 +222,19 @@ void Game::pollEvent() {
                 else {
                     menuText.setFillColor(sf::Color::White);
                 }
+
+                if (reprendreText.getGlobalBounds().contains((float)event.mouseMove.x, (float)event.mouseMove.y)) {
+                    reprendreText.setFillColor(sf::Color::Yellow);
+                }
+                else {
+                    reprendreText.setFillColor(sf::Color::White);
+                }
+                if (optionText.getGlobalBounds().contains((float)event.mouseMove.x, (float)event.mouseMove.y)) {
+                    optionText.setFillColor(sf::Color::Yellow);
+                }
+                else {
+                    optionText.setFillColor(sf::Color::White);
+                }
             }
         }
     }
@@ -213,19 +246,12 @@ void Game::updateAll() {
         //deltaTime = Clock.restart().asSeconds();
         player.update(deltaTime);
         player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies);
-        player.potionTimer += deltaTime;
-        player.potionUpdate(deltaTime);
 
         //COLLISIONS
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
                 enemy->update(deltaTime);
-                enemy->behavior(deltaTime, wallSprite, theMap.mapObjects, player);
-                if (player.sprite.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) {
-                    /*playing = false;
-                    gameOver = true;*/
-                    enemy->state = false;
-                }
+                enemy->behavior(deltaTime, view, theMap.mapObjects, player);
             }
             for (int i = 0; i < theMap.enemies.size(); i++) {                     
                 if (theMap.enemies[i]->state == false) {
@@ -245,17 +271,22 @@ void Game::updateAll() {
                 }
             }
         }
-
+        //WIN CONDITION
         if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
             || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
             win = true;
             playing = false;
         }
-        // UPDATE LA POSITION DE L'ICONE KEY (quand le joueur possède une clé) EN HAUT A GAUCHE DE L'ECRAN
+        // UPDATE POSITION INCONES (clés, potions etc)
         keyIcone.setPosition(player.sprite.getPosition().x + (player.sprite.getGlobalBounds().width * player.sprite.getScale().x)/2 - view.getSize().x / 2
         + keyIcone.getGlobalBounds().width * keyIcone.getScale().x,
         player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
-        + keyIcone.getGlobalBounds().height * keyIcone.getScale().y); 
+        + keyIcone.getGlobalBounds().height * keyIcone.getScale().y);
+
+        speedIcone.setPosition(keyIcone.getPosition().x + view.getSize().x * 0.95 - speedIcone.getGlobalBounds().width * speedIcone.getScale().x, keyIcone.getPosition().y);
+
+        //TIMER UPDATE
+        
     }
 }
 
@@ -284,8 +315,8 @@ void Game::drawAll() {
             }
         }
         player.sprite.setTexture(playerTexture);
-        keyIcone.setTexture(keyTexture);
         if (player.key1) window.draw(keyIcone);
+        if (player.potion) window.draw(speedIcone);
         player.draw(window);
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
@@ -316,6 +347,12 @@ void Game::drawAll() {
         window.setView(window.getDefaultView());
         window.draw(gameOverText);
         window.draw(retryText);
+        window.draw(menuText);
+    }
+    if (pause) {
+        window.setView(window.getDefaultView());
+        window.draw(reprendreText);
+        window.draw(optionText);
         window.draw(menuText);
     }
     window.display();
@@ -351,7 +388,7 @@ void Game::loadTextures() {
     gameOverText.setFillColor(sf::Color::Red);
 
     retryText.setFont(baseFont);
-    retryText.setString("RETRY ?");
+    retryText.setString("RETRY");
     retryText.setCharacterSize(50);
     retryText.setPosition((window.getSize().x - retryText.getGlobalBounds().width) / 2,
         gameOverText.getPosition().y + gameOverText.getCharacterSize() + window.getSize().y * 0.1);
@@ -366,8 +403,22 @@ void Game::loadTextures() {
     );
     menuText.setFillColor(sf::Color::White);
 
+    reprendreText.setFont(baseFont);
+    reprendreText.setString("REPRENDRE");
+    reprendreText.setCharacterSize(75);
+    reprendreText.setPosition((window.getSize().x - reprendreText.getGlobalBounds().width) / 2, (window.getSize().y - reprendreText.getCharacterSize()) / 2.5);
+    reprendreText.setFillColor(sf::Color::White);
+
+    optionText.setFont(baseFont);
+    optionText.setString("OPTIONS");
+    optionText.setCharacterSize(50);
+    optionText.setPosition((window.getSize().x - optionText.getGlobalBounds().width) / 2, menuText.getPosition().y - optionText.getCharacterSize() *1.5);
+    optionText.setFillColor(sf::Color::White);
+
     keyIcone.setTexture(keyTexture);
     keyIcone.setScale(0.075, 0.075);
+    speedIcone.setTexture(potionTexture);
+    speedIcone.setScale(0.075, 0.075);
     
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);
@@ -390,15 +441,10 @@ void Game::loadTextures() {
 void Game::reset() {
 
     deltaTime = Clock.restart().asSeconds();
-    //enemies.clear();
     theMap.enemies.clear();
-    //objects.clear();
     theMap.objects.clear();
     theMap.mapObjects.clear();
-    player.sprite.setPosition(player.checkpoint);
-    player.potion = false;
-    //player.key1 = false; //jsp si on garde la/les clé en cas de gameover
-    //setupSpawns();
+    player.checkpointResetPlayer();
     theMap.loadMap(player);
 
 }
