@@ -1,7 +1,10 @@
 #pragma once
 
 #include "entity.h"
+#include "enemy.h"
 #include "mapEntities.h"
+
+class Enemy;
 
 class Player : public Entity {
 public:
@@ -9,12 +12,13 @@ public:
 	float potionTimer = 0;
 	float baseSpeed = 300;
 	bool key = false;
+	sf::RectangleShape attackArea;
 	sf::Vector2f playerPos;
 
 	Player(float posX, float posY);
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window) override;
 
-	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view);
+	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies);
 	void potionUpdate(float deltaTime);
 };
