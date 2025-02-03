@@ -15,3 +15,12 @@ void Enemy::draw(sf::RenderWindow& window) {
 }
 
 void Enemy::behavior(float& deltaTime, sf::Sprite& daWall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {}
+
+void Enemy::takeDamage(int damage) 
+{
+    health -= damage;
+    if (health <= 0)
+    {
+        state = false;
+    }
+}
