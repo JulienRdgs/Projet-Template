@@ -9,15 +9,51 @@ Player::Player(float xPos, float yPos) {
     posY = yPos;
     speedX = baseSpeed;
     speedY = baseSpeed;
+
+    attackArea.setSize(sf::Vector2f(100.f, 5.f));
+    attackArea.setFillColor(sf::Color::Red);
+    attackArea.setOrigin(attackArea.getSize().x / 2, attackArea.getSize().y / 2);
 }
 void Player::update(float deltaTime) {
     posX = sprite.getPosition().x;
     posY = sprite.getPosition().y;
 }
-void Player::draw(sf::RenderWindow& window) {
+void Player::draw(sf::RenderWindow& window) 
+{
     window.draw(sprite);
+    window.draw(attackArea);
 }
-void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view) {
+
+void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
+    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+    sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos);
+    sf::Vector2f playerPos(sprite.getPosition().x + (sprite.getLocalBounds().width * sprite.getScale().x) / 2, sprite.getPosition().y + (sprite.getLocalBounds().height * sprite.getScale().y) / 2);
+
+    sf::Vector2f attackDir = worldMousePos - playerPos;
+    float angle = std::atan2(attackDir.y, attackDir.x) * 180 / 3.14159f;
+
+    attackArea.setPosition(playerPos);
+    attackArea.setRotation(angle);
+
+    float length = 75.f;
+    attackArea.setSize(sf::Vector2f(length, 5.f));
+
+    attackArea.setOrigin(attackArea.getSize().x / 10, attackArea.getSize().y / 10);
+
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
+    {
+        for (auto& enemy : enemies) 
+        {
+            sf::Vector2f enemyPos = enemy->sprite.getPosition();
+            float distance = std::sqrt(std::pow(enemyPos.x - playerPos.x, 2) + std::pow(enemyPos.y - playerPos.y, 2));
+
+            if (distance < length && attackArea.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) 
+            {
+                enemy->takeDamage(10);
+            }
+        }
+    }
+    
     //MOUVEMENTS
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         sprite.move(0, speedY * deltaTime);
