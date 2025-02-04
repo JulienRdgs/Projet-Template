@@ -10,6 +10,8 @@ class Player : public Entity {
 public:
 	float hp = 100;
 	bool potion = false;
+	bool pnj = false;
+	bool pnjMove = false;
 	float potionTimer = 0;
 	float baseSpeed = 300;
 	bool key1 = false;

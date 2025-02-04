@@ -152,6 +152,7 @@
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="physics.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="PNJ.cpp" />
     <ClCompile Include="potion.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="threadManager.cpp" />
@@ -170,6 +171,7 @@
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="physics.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="PNJ.h" />
     <ClInclude Include="potion.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="threadManager.h" />

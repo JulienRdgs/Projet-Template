@@ -33,6 +33,7 @@ public:
 	sf::Texture wallTexture;
 	sf::Texture floorTexture;
 	sf::Texture lockTexture;
+	sf::Texture pnjTexture;
 	sf::Texture checkpointTexture;
 	sf::Texture checkpointOnTexture;
 
@@ -41,6 +42,7 @@ public:
 	sf::Sprite wallSprite;
 	sf::Sprite floorSprite;
 	sf::Sprite lockSprite;
+	sf::Sprite pnjSprite;
 
 	sf::Font baseFont;
 	sf::Text winText;
@@ -50,6 +52,11 @@ public:
 	sf::Text retryText;
 	sf::Text reprendreText;
 	sf::Text optionText;
+	sf::Text dialogue;
+
+	float dialogueTimer = 0.0f;
+	float dialogueLimit = 10.0f;
+	std::string dialogueText = "";
 
 	Game(std::vector<sf::VideoMode> modes);
 

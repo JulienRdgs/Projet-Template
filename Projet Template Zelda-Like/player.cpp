@@ -35,8 +35,8 @@ void Player::update(float deltaTime) {
     potionTimer += deltaTime;
     if (potion) {
         //sprite.setColor(sf::Color(24, 202, 237));  //TROUVER AUTRE CHOSE A AFFICHER QUAND POTION ACTIVE
-        speedX = baseSpeed * 1.75f;
-        speedY = baseSpeed * 1.75f;
+        speedX = baseSpeed * 5.75f;
+        speedY = baseSpeed * 5.75f;
         if (potionTimer >= 5) potion = false;
     }
     else {
@@ -116,10 +116,14 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(0, speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1) || wall->type == "pnj") {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, -speedY * deltaTime);
                         view.move(0, -speedY * deltaTime);
+                        if (wall->type == "pnj")
+                        {
+                            pnj = true;
+                        }
                     }
                 }
             }
@@ -130,10 +134,14 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(0, -speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1) || wall->type == "pnj") {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(0, speedY * deltaTime);
                         view.move(0, speedY * deltaTime);
+                        if (wall->type == "pnj")
+                        {
+                            pnj = true;
+                        }
                     }
                 }
             }
@@ -144,10 +152,14 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(-speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1) || wall->type == "pnj") {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(speedX * deltaTime, 0);
                         view.move(speedX * deltaTime, 0);
+                        if (wall->type == "pnj")
+                        {
+                            pnj = true;
+                        }
                     }
                 }
             }
@@ -158,10 +170,14 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         view.move(speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
-                if (wall->type == "wall" || (wall->type == "lock" && !key1)) {
+                if (wall->type == "wall" || (wall->type == "lock" && !key1) || wall->type == "pnj") {
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         sprite.move(-speedX * deltaTime, 0);
                         view.move(-speedX * deltaTime, 0);
+                        if (wall->type == "pnj")
+                        {
+                            pnj = true;
+                        }
                     }
                 }
             }
@@ -210,4 +226,5 @@ void Player::checkpointResetPlayer() {
     lock1opened = checkpointLock1opened;
     sprite.setPosition(checkpoint);
     potion = false;
+    pnjMove = false;
 }

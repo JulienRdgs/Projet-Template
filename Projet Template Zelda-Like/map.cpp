@@ -56,6 +56,12 @@ void Map::loadMap(Player& player) {
 				}
 				yInteractables++;
 			}
+			else if (line[i] == 'P') {
+				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
+				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
+				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
+				mapObjects[y].emplace_back(std::make_unique<MapEntities>("pnj", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
+			}
 			//LOCK
 			else if (line[i] == 'l') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());

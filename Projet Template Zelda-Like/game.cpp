@@ -243,9 +243,23 @@ void Game::pollEvent() {
 void Game::updateAll() {
     if (playing) {
         view.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
-        //deltaTime = Clock.restart().asSeconds();
         player.update(deltaTime);
         player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies);
+
+        if (player.pnj) {
+            dialogueTimer += deltaTime;
+        }
+
+        if (player.pnjMove)
+        {
+            for (auto& row : theMap.mapObjects) {
+                for (auto& obj : row) {
+                    if (obj->type == "pnj") {
+                        obj->sprite.move(50.f * deltaTime, 0.f);
+                    }
+                }
+            }
+        }
 
         //COLLISIONS
         if (!theMap.enemies.empty()) {
@@ -272,11 +286,11 @@ void Game::updateAll() {
             }
         }
         //WIN CONDITION
-        if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
-            || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
-            win = true;
-            playing = false;
-        }
+        //if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
+        //    || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
+        //    win = true;
+        //    playing = false;
+        //}
         // UPDATE POSITION INCONES (clés, potions etc)
         keyIcone.setPosition(player.sprite.getPosition().x + (player.sprite.getGlobalBounds().width * player.sprite.getScale().x)/2 - view.getSize().x / 2
         + keyIcone.getGlobalBounds().width * keyIcone.getScale().x,
@@ -294,6 +308,7 @@ void Game::drawAll() {
     window.clear();
     if (playing) {
         window.setView(view);
+
         if (!theMap.mapObjects.empty()) {
             for (auto& objz : theMap.mapObjects) {
                 for (auto& obj : objz) {
@@ -301,6 +316,7 @@ void Game::drawAll() {
                         obj->sprite.setTexture(wallTexture);
                     }
                     else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
+                    else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
                     else if (obj->type == "checkpoint") { 
                         if (obj->sprite.getPosition() == player.checkpoint) {
                             obj->sprite.setTexture(checkpointOnTexture);
@@ -332,8 +348,20 @@ void Game::drawAll() {
                 //for (auto& obj : objz) {
                     if (obj->type == "potion") obj->sprite.setTexture(potionTexture);
                     else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
+                    else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
                     window.draw(obj->sprite);
                 //}
+            }
+        }
+        if (dialogueTimer > 0)
+        {
+            if (dialogueTimer < 10)
+            {
+                
+                window.draw(dialogue);
+            }
+            else {
+                player.pnjMove = true;
             }
         }
     }
@@ -368,6 +396,7 @@ void Game::loadTextures() {
     wallTexture.loadFromFile("assets/wall.png");
     floorTexture.loadFromFile("assets/floor.png");
     lockTexture.loadFromFile("assets/lock.png");
+    pnjTexture.loadFromFile("assets/pnj.png");
     checkpointTexture.loadFromFile("assets/checkpoint.png");
     checkpointOnTexture.loadFromFile("assets/checkpointOn.png");
 
@@ -423,6 +452,13 @@ void Game::loadTextures() {
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);
     lockSprite.setTexture(lockTexture);
+
+    dialogue.setFont(baseFont);
+    dialogue.setString("Bonjour, aventurier !Faites attention aux dangers qui vous attendent.");
+    dialogue.setCharacterSize(24);
+    dialogue.setFillColor(sf::Color::White);
+    dialogue.setPosition(view.getCenter().x - 200, view.getCenter().y + 100);
+    window.draw(dialogue);
 }
 
 //void Game::setupSpawns() {
