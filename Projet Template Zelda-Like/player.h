@@ -3,7 +3,7 @@
 #include "entity.h"
 #include "enemy.h"
 #include "mapEntities.h"
-#include "potion.h"
+#include "bomb.h"
 #include "key.h"
 
 class Enemy;

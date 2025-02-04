@@ -4,7 +4,7 @@
 #include "player.h"
 #include "chaser.h"
 #include "patrolling.h"
-#include "potion.h"
+#include "bomb.h"
 #include "key.h"
 #include "map.h"
 

@@ -1,4 +1,4 @@
-#include "potion.h"
+#include "bomb.h"
 
 Bomb::Bomb() {
 	type = "bomb";
