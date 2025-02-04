@@ -28,7 +28,7 @@ public:
 	sf::Texture playerTexture;
 	sf::Texture chaserTexture;
 	sf::Texture patrollingTexture;
-	sf::Texture potionTexture;
+	sf::Texture bombTexture;
 	sf::Texture keyTexture;
 	sf::Texture wallTexture;
 	sf::Texture floorTexture;
@@ -36,13 +36,15 @@ public:
 	sf::Texture pnjTexture;
 	sf::Texture checkpointTexture;
 	sf::Texture checkpointOnTexture;
+	sf::Texture explosionTexture;
 
 	sf::Sprite keyIcone;
-	sf::Sprite speedIcone;
+	sf::Sprite bombIcone;
 	sf::Sprite wallSprite;
 	sf::Sprite floorSprite;
 	sf::Sprite lockSprite;
 	sf::Sprite pnjSprite;
+	sf::Sprite explosionSprite;
 
 	sf::Font baseFont;
 	sf::Text winText;
@@ -53,6 +55,7 @@ public:
 	sf::Text reprendreText;
 	sf::Text optionText;
 	sf::Text dialogue;
+	sf::Text backText;
 
 	float dialogueTimer = 0.0f;
 	float dialogueLimit = 10.0f;

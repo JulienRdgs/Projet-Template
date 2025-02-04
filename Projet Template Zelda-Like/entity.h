@@ -12,5 +12,5 @@ public:
 
 	Entity();
 	virtual void update(float deltaTime) = 0;
-	virtual void draw(sf::RenderWindow& window) = 0;
+	virtual void draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) = 0;
 };

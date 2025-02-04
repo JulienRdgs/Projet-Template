@@ -276,6 +276,14 @@ void Game::updateAll() {
             for (auto& enemy : theMap.enemies) {
                 enemy->update(deltaTime);
                 enemy->behavior(deltaTime, view, theMap.mapObjects, player);
+                if (!player.moovingBomb.empty()) {
+                    for (int j = 0; j < player.moovingBomb.size(); j++) {
+                        if (enemy->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
+                            enemy->state = false;
+                            player.moovingBomb.erase(player.moovingBomb.begin() + j);
+                        }
+                    }
+                }
             }
             for (int i = 0; i < theMap.enemies.size(); i++) {                     
                 if (theMap.enemies[i]->state == false) {
@@ -286,12 +294,25 @@ void Game::updateAll() {
         if (!theMap.objects.empty()) {
             for (auto& obj : theMap.objects) {
                 if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
-                    obj->interact(player, theMap.objects);
+                    obj->interact(player.sprite, theMap.objects, player.inventaire);
                 }
             }
             for (int i = 0; i < theMap.objects.size(); i++) {
                 if (theMap.objects[i]->state == false) {
                     theMap.objects.erase(theMap.objects.begin() + i);
+                }
+            }
+        }
+        for (auto& objz : theMap.mapObjects) {
+            for (auto& obj : objz) {
+                if (obj->type == "wall") {
+                    if (!player.moovingBomb.empty()) {
+                        for (int j = 0; j < player.moovingBomb.size(); j++) {
+                            if (obj->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
+                                player.moovingBomb.erase(player.moovingBomb.begin() + j);
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -307,7 +328,7 @@ void Game::updateAll() {
         player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
         + keyIcone.getGlobalBounds().height * keyIcone.getScale().y);
 
-        speedIcone.setPosition(keyIcone.getPosition().x + view.getSize().x * 0.95 - speedIcone.getGlobalBounds().width * speedIcone.getScale().x, keyIcone.getPosition().y);
+        bombIcone.setPosition(keyIcone.getPosition().x + view.getSize().x * 0.94 - bombIcone.getGlobalBounds().width * bombIcone.getScale().x, keyIcone.getPosition().y);
 
         //TIMER UPDATE
         
@@ -315,7 +336,7 @@ void Game::updateAll() {
 }
 
 void Game::drawAll() {
-    window.clear();
+    window.clear(sf::Color::Blue);
     if (playing) {
         window.setView(view);
 
@@ -341,26 +362,27 @@ void Game::drawAll() {
             }
         }
         player.sprite.setTexture(playerTexture);
-        if (player.key1) window.draw(keyIcone);
-        if (player.potion) window.draw(speedIcone);
-        player.draw(window);
+        player.draw(window, keyIcone, bombIcone, chaserTexture, patrollingTexture);
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
                 //for (auto& enemy : enemyz) {
                     if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
                     else if (enemy->type == "patrolling") enemy->sprite.setTexture(patrollingTexture);
-                    enemy->draw(window);
+                    enemy->draw(window, keyIcone, bombIcone, chaserTexture, patrollingTexture);
                 //}
             }
         }
         if (!theMap.objects.empty()) {
             for (auto& obj : theMap.objects) {
-                //for (auto& obj : objz) {
-                    if (obj->type == "potion") obj->sprite.setTexture(potionTexture);
-                    else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
-                    else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
-                    window.draw(obj->sprite);
-                //}
+                if (obj->type == "bomb") obj->sprite.setTexture(bombTexture);
+                else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
+                else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
+                window.draw(obj->sprite);
+            }
+        }
+        if (!player.moovingBomb.empty()) {
+            for (auto& bomb : player.moovingBomb) {
+                bomb->sprite.setTexture(bombTexture);
             }
         }
         if (dialogueTimer > 0)
@@ -401,7 +423,7 @@ void Game::loadTextures() {
     playerTexture.loadFromFile("assets/player.png");
     chaserTexture.loadFromFile("assets/chaser.png");
     patrollingTexture.loadFromFile("assets/patrolling.png");
-    potionTexture.loadFromFile("assets/potion.png");
+    bombTexture.loadFromFile("assets/bomb.png");
     keyTexture.loadFromFile("assets/key.png");
     wallTexture.loadFromFile("assets/wall.png");
     floorTexture.loadFromFile("assets/floor.png");
@@ -409,6 +431,7 @@ void Game::loadTextures() {
     pnjTexture.loadFromFile("assets/pnj.png");
     checkpointTexture.loadFromFile("assets/checkpoint.png");
     checkpointOnTexture.loadFromFile("assets/checkpointOn.png");
+    explosionTexture.loadFromFile("assets/explosion.png");
 
     baseFont.loadFromFile("assets/Arial.ttf");
 
@@ -454,10 +477,14 @@ void Game::loadTextures() {
     optionText.setPosition((window.getSize().x - optionText.getGlobalBounds().width) / 2, menuText.getPosition().y - optionText.getCharacterSize() *1.5);
     optionText.setFillColor(sf::Color::White);
 
+    player.bombText.setFont(baseFont);
+    player.bombText.setCharacterSize(25);
+    player.bombText.setFillColor(sf::Color::White);
+
     keyIcone.setTexture(keyTexture);
     keyIcone.setScale(0.075, 0.075);
-    speedIcone.setTexture(potionTexture);
-    speedIcone.setScale(0.075, 0.075);
+    bombIcone.setTexture(bombTexture);
+    bombIcone.setScale(0.075, 0.075);
     
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);

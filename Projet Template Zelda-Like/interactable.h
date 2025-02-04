@@ -1,9 +1,10 @@
 #pragma once
 
-#include "player.h"
+#include "includes.h"
 
 class Interactable {
 public:
+	std::string keyNumber = "null";
 	float posX;
 	float posY;
 	bool state = true;
@@ -12,6 +13,6 @@ public:
 
 	Interactable();
 
-	virtual void interact(Player& player, std::vector<std::unique_ptr<Interactable>>& mapObjects) = 0;
+	virtual bool interact(sf::Sprite& playerSprite, std::vector<std::shared_ptr<Interactable>>& mapObjects,std::vector<std::shared_ptr<Interactable>>& inventaire) = 0;
 	//void destroy(std::vector<Interactable>& objects);
 };

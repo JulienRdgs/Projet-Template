@@ -3,6 +3,8 @@
 #include "entity.h"
 #include "enemy.h"
 #include "mapEntities.h"
+#include "potion.h"
+#include "key.h"
 
 class Enemy;
 
@@ -22,6 +24,16 @@ public:
 	float invincibleTimer = 0;
 	float invincibleLimit = 3;
 
+	std::vector<std::shared_ptr<Interactable>> inventaire;
+	int bombCount = 0;
+	sf::Text bombText;
+	float bombThrowTimer = 0;
+	float bombThrowCooldown = 2;
+	bool throwingOneAtATime = false;
+	std::vector<std::shared_ptr<Bomb>> moovingBomb;
+	float lastSpeedX = 0;
+	float lastSpeedY = 0;
+
 	sf::RectangleShape sword;
 	sf::RectangleShape attackHitbox;
 	bool isAttacking = false;
@@ -32,13 +44,14 @@ public:
 
 	Player();
 	void update(float deltaTime) override;
-	void draw(sf::RenderWindow& window) override;
+	void draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) override;
 
 	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies);
 
 	bool checkpointHp = 100;
 	bool checkpointKey1 = false;
 	bool checkpointLock1opened = false;
+	std::vector<std::shared_ptr<Interactable>> checkpointInventaire;
 	void checkpointUpdate();
 	void checkpointResetPlayer();
 };

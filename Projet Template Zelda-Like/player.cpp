@@ -55,17 +55,41 @@ void Player::update(float deltaTime) {
         sprite.setColor(sf::Color::White);
         invincibleTimer = 0;
     }
+    //CHECK INVENTAIRE
+    bombCount = 0;
+    key1 = false;
+    for (auto& obj : inventaire) {
+        if (obj->type == "key") {
+            if (obj->keyNumber == "key1") key1 = true;
+        }
+        if (obj->type == "bomb") bombCount++;
+    }
+    //BOMBS
+    bombThrowTimer += deltaTime;
+    for (auto& bomb : moovingBomb) {
+        bomb->sprite.move(bomb->speedX * deltaTime, bomb->speedY * deltaTime);
+    }
 }
-void Player::draw(sf::RenderWindow& window) 
-{
+void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) {
+
+    if (key1) window.draw(sprite1);
+    window.draw(sprite2);
     window.draw(sprite);
     window.draw(sword);
+    bombText.setString(std::to_string(bombCount));
+    bombText.setPosition(sprite2.getPosition().x + (sprite2.getLocalBounds().width * sprite2.getScale().x),
+        sprite2.getPosition().y + (sprite2.getLocalBounds().height * sprite2.getScale().y) / 2 - bombText.getCharacterSize() / 2);
+    for (auto& bomb : moovingBomb) {
+        window.draw(bomb->sprite);
+    }
+    window.draw(bombText);
     if (isAttacking) {
         window.draw(attackHitbox);
     }
 }
 
-void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
+void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
+    std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking) {
         isAttacking = true;
         attackTimer = attackDuration;
@@ -113,6 +137,8 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     //MOUVEMENTS
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         sprite.move(0, speedY * deltaTime);
+        lastSpeedX = 0;
+        lastSpeedY = speedY;
         view.move(0, speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
@@ -131,6 +157,8 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
         sprite.move(0, -speedY * deltaTime);
+        lastSpeedX = 0;
+        lastSpeedY = -speedY;
         view.move(0, -speedY * deltaTime);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
@@ -149,6 +177,8 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         sprite.move(-speedX * deltaTime, 0);
+        lastSpeedX = -speedX;
+        lastSpeedY = 0;
         view.move(-speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
@@ -167,6 +197,8 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         sprite.move(speedX * deltaTime, 0);
+        lastSpeedX = speedX;
+        lastSpeedY = 0;
         view.move(speedX * deltaTime, 0);
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
@@ -196,16 +228,37 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             }
         }
     }
+    //JETER UNE BOMBE
+    if (bombThrowTimer > bombThrowCooldown && bombCount > 0) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+            if (!inventaire.empty()) {
+                for (int i = 0; i < inventaire.size(); i++) {
+                    if (inventaire[i]->type == "bomb" && throwingOneAtATime == false) {
+                        throwingOneAtATime = true;
+                        std::shared_ptr<Bomb> bombe = std::make_shared<Bomb>((float)sprite.getPosition().x, (float)sprite.getPosition().y);
+                        bombe->speedX = lastSpeedX * 2;
+                        bombe->speedY = lastSpeedY * 2;
+                        moovingBomb.push_back(bombe);
+                        inventaire.erase(inventaire.begin() + i);
+                        bombThrowTimer = 0;
+                    }
+                }
+            }
+        }
+    }
+    throwingOneAtATime = false;
 
     //OUVRIR PORTE
     if (key1) {
         for (int i = 0; i < walls.size(); i++) {
             for (int y = 0; y < walls[i].size(); y++) {
                 if (sprite.getGlobalBounds().intersects(walls[i][y]->sprite.getGlobalBounds())) {
-                    if (walls[i][y]->type == "lock") {
+                    if (walls[i][y]->lockNumber == "lock1") {
                         walls[i].erase(walls[i].begin() + y);
                         lock1opened = true;
-                        key1 = false;
+                        for (int j = 0; j < inventaire.size(); j++) {
+                            if (inventaire[j]->keyNumber == "key1") inventaire.erase(inventaire.begin() + j);
+                        }
                     }
                 }
             }
@@ -217,6 +270,7 @@ void Player::checkpointUpdate() {
     checkpointHp = hp;
     checkpointKey1 = key1;
     checkpointLock1opened = lock1opened;
+    checkpointInventaire = inventaire;
 }
 
 void Player::checkpointResetPlayer() {
@@ -227,4 +281,5 @@ void Player::checkpointResetPlayer() {
     sprite.setPosition(checkpoint);
     potion = false;
     pnjMove = false;
+    inventaire = checkpointInventaire;
 }

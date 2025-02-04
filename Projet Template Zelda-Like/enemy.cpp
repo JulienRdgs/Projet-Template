@@ -10,7 +10,9 @@ void Enemy::update(float deltaTime) {
     posX = sprite.getPosition().x;
     posY = sprite.getPosition().y;
 }
-void Enemy::draw(sf::RenderWindow& window) {
+void Enemy::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) {
+    if (type == "chaser") sprite.setTexture(texture1);
+    else if (type == "patrolling") sprite.setTexture(texture2);
     window.draw(sprite);
 }
 

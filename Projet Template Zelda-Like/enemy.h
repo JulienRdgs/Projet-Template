@@ -15,7 +15,7 @@ public:
 	~Enemy();
 
 	void update(float deltaTime) override;
-	void draw(sf::RenderWindow& window) override;
+	void draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) override;
 
 	virtual void behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player);
 	virtual void takeDamage(int damage);

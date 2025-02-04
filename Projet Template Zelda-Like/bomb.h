@@ -2,11 +2,14 @@
 
 #include "interactable.h"
 
-class Key : public Interactable {
+class Bomb : public Interactable {
 public:
+	float direction = 0;
+	float speedX = 0;
+	float speedY = 0;
 
-	Key(std::string keyNb);
-	Key(std::string keyNb, float xPos, float yPos);
+	Bomb();
+	Bomb(float xPos, float yPos);
 
 	bool interact(sf::Sprite& playerSprite, std::vector<std::shared_ptr<Interactable>>& mapObjects, std::vector<std::shared_ptr<Interactable>>& inventaire) override;
 };

@@ -41,10 +41,10 @@ void Map::loadMap(Player& player) {
 				yEnemy++;
 			}
 			//SPEED POTION
-			else if (line[i] == 's') {
+			else if (line[i] == 'b') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
-				objects.emplace_back(std::make_unique<Potion>((float)i * 50.f, (float)y * 50.f));
+				objects.emplace_back(std::make_shared<Bomb>((float)i * 50.f, (float)y * 50.f));
 				yInteractables++;
 			}
 			//KEY
@@ -52,7 +52,7 @@ void Map::loadMap(Player& player) {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
 				if (/*player.key1 == false ||*/ player.lock1opened == false) {
-					objects.emplace_back(std::make_unique<Key>("key1", (float)i * 50.f, (float)y * 50.f));
+					objects.emplace_back(std::make_shared<Key>("key1", (float)i * 50.f, (float)y * 50.f));
 				}
 				yInteractables++;
 			}
