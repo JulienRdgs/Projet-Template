@@ -1,9 +1,8 @@
 #pragma once
 
-#include "mapEntities.h"
 #include "chaser.h"
 #include "interactable.h"
-#include "player.h"
+#include "boss.h"
 
 class Map {
 public:

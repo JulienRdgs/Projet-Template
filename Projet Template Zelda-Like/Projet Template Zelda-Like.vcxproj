@@ -140,6 +140,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bomb.cpp" />
+    <ClCompile Include="boss.cpp" />
     <ClCompile Include="chaser.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
@@ -156,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bomb.h" />
+    <ClInclude Include="boss.h" />
     <ClInclude Include="chaser.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />

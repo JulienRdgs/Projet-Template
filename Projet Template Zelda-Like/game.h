@@ -37,6 +37,8 @@ public:
 	sf::Texture checkpointTexture;
 	sf::Texture checkpointOnTexture;
 	sf::Texture explosionTexture;
+	sf::Texture bossTexture;
+	sf::Texture projectileTexture;
 
 	sf::Sprite keyIcone;
 	sf::Sprite bombIcone;

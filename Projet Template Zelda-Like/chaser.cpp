@@ -2,12 +2,13 @@
 
 ChaserEnemy::ChaserEnemy(float xPos, float yPos) {
 	type = "chaser";
-	sprite.setScale(0.1, 0.1);
+	sprite.setScale(0.1f, 0.1f);
 	sprite.setPosition({ xPos, yPos });
 	posX = xPos;
 	posY = yPos;
 	speedX = 100;
 	speedY = 100;
+	atk = 10;
 }
 
 void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {
@@ -30,9 +31,9 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 					/*playing = false;
 					gameOver = true;*/
 					/*enemy->state = false;*/
-					sprite.move(speedX * 0.5, 0);
+					sprite.move(speedX * 0.5f, 0);
 					player.gotHit = true;
-					//DAMAGES
+					player.hp -= atk;
 				}
 				else { sprite.move(speedX * deltaTime, 0); }
 			}
@@ -44,9 +45,9 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 					/*playing = false;
 					gameOver = true;*/
 					/*enemy->state = false;*/
-					sprite.move(-speedX * 0.5, 0);
+					sprite.move(-speedX * 0.5f, 0);
 					player.gotHit = true;
-					//DAMAGES
+					player.hp -= atk;
 				}
 				else { sprite.move(-speedX * deltaTime, 0); }
 			}
@@ -58,9 +59,9 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 					/*playing = false;
 					gameOver = true;*/
 					/*enemy->state = false;*/
-					sprite.move(0, speedY * 0.5);
+					sprite.move(0, speedY * 0.5f);
 					player.gotHit = true;
-					//DAMAGES
+					player.hp -= atk;
 				}
 				else { sprite.move(0, speedY * deltaTime); }
 			}
@@ -72,9 +73,9 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 					/*playing = false;
 					gameOver = true;*/
 					/*enemy->state = false;*/
-					sprite.move(0, -speedY * 0.5);
+					sprite.move(0, -speedY * 0.5f);
 					player.gotHit = true;
-					//DAMAGES
+					player.hp -= atk;
 				}
 				else { sprite.move(0, -speedY * deltaTime); }
 			}

@@ -40,6 +40,13 @@ void Map::loadMap(Player& player) {
 				enemies.emplace_back(std::make_unique<PatrollingEnemy>((float)i * 50.f, (float)y * 50.f));
 				yEnemy++;
 			}
+			//BOSS
+			else if (line[i] == 'B') {
+				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
+				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
+				enemies.emplace_back(std::make_unique<Boss>((float)i * 50.f, (float)y * 50.f));
+				yEnemy++;
+			}
 			//SPEED POTION
 			else if (line[i] == 'b') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());

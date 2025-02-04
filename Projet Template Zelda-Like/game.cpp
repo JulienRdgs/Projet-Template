@@ -2,12 +2,14 @@
 #include "menu.h"
 
 Game::Game(std::vector<sf::VideoMode> modes) : /*window(sf::VideoMode(1920,1080), "Escape the Dungeon", sf::Style::Fullscreen)*/
-    window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen), volume(50), view(sf::Vector2f(75.f, 75.f), sf::Vector2f((float)modes[9].width, (float)modes[9].height)) { //modes[9].width = 1280, modes[9].height = 800
+    window(sf::VideoMode(modes[0].width, modes[0].height), "Zelda-like", sf::Style::Fullscreen), volume(50), view(sf::Vector2f(75.f, 75.f),
+        sf::Vector2f((float)modes[9].width, (float)modes[9].height)) { //modes[9].width = 1280, modes[9].height = 800
+    //window.setFramerateLimit(60);
 }
 
 void Game::showMenu() {
     window.setView(window.getDefaultView());
-    Menu menu(window.getSize().x, window.getSize().y);
+    Menu menu((float)window.getSize().x, (float)window.getSize().y);
     baseFont.loadFromFile("assets/Arial.ttf");
     while (window.isOpen()) {
         sf::Event event;
@@ -81,7 +83,7 @@ void Game::showOptionsMenu() {
     volumeText.setString("Volume :");
     volumeText.setCharacterSize(80);
     volumeText.setFillColor(sf::Color::White);
-    volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
+    volumeText.setPosition((float)window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, (float)window.getSize().y / 3 - volumeText.getCharacterSize());
 
     backText.setFont(baseFont);
     backText.setString("Back");
@@ -90,7 +92,7 @@ void Game::showOptionsMenu() {
     backText.setFillColor(sf::Color::White);
 
     sf::RectangleShape volumeBar(sf::Vector2f(400, 10));
-    volumeBar.setPosition(window.getSize().x / 2 - volumeBar.getSize().x / 2, window.getSize().y / 2);
+    volumeBar.setPosition((float)window.getSize().x / 2 - volumeBar.getSize().x / 2, (float)window.getSize().y / 2);
     volumeBar.setFillColor(sf::Color(100, 100, 100));
 
     sf::CircleShape volumeHandle(15);
@@ -115,7 +117,7 @@ void Game::showOptionsMenu() {
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
-                    if (volumeHandle.getGlobalBounds().contains(event.mouseButton.x, event.mouseButton.y)) {
+                    if (volumeHandle.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
                         isDragging = true;
                     }
                 }
@@ -143,7 +145,7 @@ void Game::showOptionsMenu() {
 
         volumeText.setString("Volume: " + std::to_string(static_cast<int>(volume)) + "%");
 
-        volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
+        volumeText.setPosition((float)window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, (float)window.getSize().y / 3 - volumeText.getCharacterSize());
 
         window.clear();
         window.draw(backText);
@@ -279,7 +281,7 @@ void Game::updateAll() {
                 if (!player.moovingBomb.empty()) {
                     for (int j = 0; j < player.moovingBomb.size(); j++) {
                         if (enemy->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
-                            enemy->state = false;
+                            enemy->takeDamage(player.bombAtk);
                             player.moovingBomb.erase(player.moovingBomb.begin() + j);
                         }
                     }
@@ -322,13 +324,19 @@ void Game::updateAll() {
         //    win = true;
         //    playing = false;
         //}
+        //LOSE CONDITION
+        /*if (player.hp <= 0) {
+            playing = false;
+            win = false;
+            gameOver = true;
+        }*/
         // UPDATE POSITION INCONES (clés, potions etc)
         keyIcone.setPosition(player.sprite.getPosition().x + (player.sprite.getGlobalBounds().width * player.sprite.getScale().x)/2 - view.getSize().x / 2
         + keyIcone.getGlobalBounds().width * keyIcone.getScale().x,
         player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
         + keyIcone.getGlobalBounds().height * keyIcone.getScale().y);
 
-        bombIcone.setPosition(keyIcone.getPosition().x + view.getSize().x * 0.94 - bombIcone.getGlobalBounds().width * bombIcone.getScale().x, keyIcone.getPosition().y);
+        bombIcone.setPosition(keyIcone.getPosition().x + (float)view.getSize().x * 0.94 - bombIcone.getGlobalBounds().width * bombIcone.getScale().x, keyIcone.getPosition().y);
 
         //TIMER UPDATE
         
@@ -336,7 +344,7 @@ void Game::updateAll() {
 }
 
 void Game::drawAll() {
-    window.clear(sf::Color::Blue);
+    window.clear();
     if (playing) {
         window.setView(view);
 
@@ -362,14 +370,13 @@ void Game::drawAll() {
             }
         }
         player.sprite.setTexture(playerTexture);
-        player.draw(window, keyIcone, bombIcone, chaserTexture, patrollingTexture);
+        player.draw(window, keyIcone, bombIcone, bombTexture, patrollingTexture);
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
-                //for (auto& enemy : enemyz) {
-                    if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
-                    else if (enemy->type == "patrolling") enemy->sprite.setTexture(patrollingTexture);
-                    enemy->draw(window, keyIcone, bombIcone, chaserTexture, patrollingTexture);
-                //}
+                if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
+                else if (enemy->type == "patrolling") enemy->sprite.setTexture(patrollingTexture);
+                if (enemy->type != "boss") enemy->draw(window, keyIcone, bombIcone, chaserTexture, patrollingTexture);
+                else { enemy->draw(window, keyIcone, bombIcone, bossTexture, projectileTexture); }
             }
         }
         if (!theMap.objects.empty()) {
@@ -378,11 +385,6 @@ void Game::drawAll() {
                 else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
                 else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
                 window.draw(obj->sprite);
-            }
-        }
-        if (!player.moovingBomb.empty()) {
-            for (auto& bomb : player.moovingBomb) {
-                bomb->sprite.setTexture(bombTexture);
             }
         }
         if (dialogueTimer > 0)
@@ -432,28 +434,30 @@ void Game::loadTextures() {
     checkpointTexture.loadFromFile("assets/checkpoint.png");
     checkpointOnTexture.loadFromFile("assets/checkpointOn.png");
     explosionTexture.loadFromFile("assets/explosion.png");
+    bossTexture.loadFromFile("assets/boss.png");
+    projectileTexture.loadFromFile("assets/projectile.png");
 
     baseFont.loadFromFile("assets/Arial.ttf");
 
     winText.setFont(baseFont);
     winText.setString("WIN");
     winText.setCharacterSize(100);
-    winText.setPosition((window.getSize().x - winText.getGlobalBounds().width) / 2,
-        (window.getSize().y - winText.getCharacterSize()) / 3);
+    winText.setPosition(((float)window.getSize().x - winText.getGlobalBounds().width) / 2,
+        ((float)window.getSize().y - winText.getCharacterSize()) / 3);
     winText.setFillColor(sf::Color::Yellow);
 
     gameOverText.setFont(baseFont);
     gameOverText.setString("GAME OVER");
     gameOverText.setCharacterSize(100);
-    gameOverText.setPosition((window.getSize().x - gameOverText.getGlobalBounds().width) / 2,
-        (window.getSize().y - gameOverText.getCharacterSize()) / 3);
+    gameOverText.setPosition(((float)window.getSize().x - gameOverText.getGlobalBounds().width) / 2,
+        ((float)window.getSize().y - gameOverText.getCharacterSize()) / 3);
     gameOverText.setFillColor(sf::Color::Red);
 
     retryText.setFont(baseFont);
     retryText.setString("RETRY");
     retryText.setCharacterSize(50);
-    retryText.setPosition((window.getSize().x - retryText.getGlobalBounds().width) / 2,
-        gameOverText.getPosition().y + gameOverText.getCharacterSize() + window.getSize().y * 0.1);
+    retryText.setPosition(((float)window.getSize().x - retryText.getGlobalBounds().width) / 2,
+        gameOverText.getPosition().y + gameOverText.getCharacterSize() + (float)window.getSize().y * 0.1);
     retryText.setFillColor(sf::Color::White);
 
     menuText.setFont(baseFont);
@@ -468,13 +472,13 @@ void Game::loadTextures() {
     reprendreText.setFont(baseFont);
     reprendreText.setString("REPRENDRE");
     reprendreText.setCharacterSize(75);
-    reprendreText.setPosition((window.getSize().x - reprendreText.getGlobalBounds().width) / 2, (window.getSize().y - reprendreText.getCharacterSize()) / 2.5);
+    reprendreText.setPosition(((float)window.getSize().x - reprendreText.getGlobalBounds().width) / 2, ((float)window.getSize().y - reprendreText.getCharacterSize()) / 2.5);
     reprendreText.setFillColor(sf::Color::White);
 
     optionText.setFont(baseFont);
     optionText.setString("OPTIONS");
     optionText.setCharacterSize(50);
-    optionText.setPosition((window.getSize().x - optionText.getGlobalBounds().width) / 2, menuText.getPosition().y - optionText.getCharacterSize() *1.5);
+    optionText.setPosition(((float)window.getSize().x - optionText.getGlobalBounds().width) / 2, menuText.getPosition().y - optionText.getCharacterSize() *1.5);
     optionText.setFillColor(sf::Color::White);
 
     player.bombText.setFont(baseFont);
@@ -482,9 +486,9 @@ void Game::loadTextures() {
     player.bombText.setFillColor(sf::Color::White);
 
     keyIcone.setTexture(keyTexture);
-    keyIcone.setScale(0.075, 0.075);
+    keyIcone.setScale(0.075f, 0.075f);
     bombIcone.setTexture(bombTexture);
-    bombIcone.setScale(0.075, 0.075);
+    bombIcone.setScale(0.075f, 0.075f);
     
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);

@@ -9,6 +9,7 @@ public:
 	float posY = 0;
 	float speedX = 0;
 	float speedY = 0;
+	bool state = true;
 
 	Entity();
 	virtual void update(float deltaTime) = 0;

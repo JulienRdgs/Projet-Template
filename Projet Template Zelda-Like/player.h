@@ -11,6 +11,8 @@ class Enemy;
 class Player : public Entity {
 public:
 	float hp = 100;
+	float atk = 10;
+	float bombAtk = atk * 3;
 	bool potion = false;
 	bool pnj = false;
 	bool pnjMove = false;
@@ -18,7 +20,6 @@ public:
 	float baseSpeed = 300;
 	bool key1 = false;
 	bool lock1opened = false;
-	sf::Vector2f playerPos;
 	sf::Vector2f checkpoint = { 75, 75 };
 	bool gotHit = false;
 	float invincibleTimer = 0;
@@ -42,13 +43,17 @@ public:
 	sf::Vector2f attackOffset;
 	sf::Vector2f swordOffset;
 
+	sf::Vector2f mousePos = { 0,0 };
+	sf::Vector2f playerPos = { 0,0 };
+	sf::Vector2f direction = { 0,0 };
+
 	Player();
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) override;
 
 	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies);
 
-	bool checkpointHp = 100;
+	float checkpointHp = 100;
 	bool checkpointKey1 = false;
 	bool checkpointLock1opened = false;
 	std::vector<std::shared_ptr<Interactable>> checkpointInventaire;

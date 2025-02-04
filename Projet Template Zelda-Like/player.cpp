@@ -79,8 +79,11 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     bombText.setString(std::to_string(bombCount));
     bombText.setPosition(sprite2.getPosition().x + (sprite2.getLocalBounds().width * sprite2.getScale().x),
         sprite2.getPosition().y + (sprite2.getLocalBounds().height * sprite2.getScale().y) / 2 - bombText.getCharacterSize() / 2);
-    for (auto& bomb : moovingBomb) {
-        window.draw(bomb->sprite);
+    if (!moovingBomb.empty()) {
+        for (auto& bomb : moovingBomb) {
+            bomb->sprite.setTexture(texture1);
+            window.draw(bomb->sprite);
+        }
     }
     window.draw(bombText);
     if (isAttacking) {
@@ -91,12 +94,13 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
     std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking) {
+        std::cout << "yo";
         isAttacking = true;
         attackTimer = attackDuration;
 
-        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
-        sf::Vector2f playerPos = sprite.getPosition();
-        sf::Vector2f direction = mousePos - playerPos;
+        mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        playerPos = sprite.getPosition();
+        direction = mousePos - playerPos;
 
         if (std::abs(direction.x) > std::abs(direction.y)) {
             if (direction.x > 0) {
@@ -129,7 +133,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
 
         for (auto& enemy : enemies) {
             if (attackHitbox.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) {
-                enemy->takeDamage(20);
+                enemy->takeDamage(atk);
             }
         }
     }
@@ -155,6 +159,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             }
         }
     }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) {
         sprite.move(0, -speedY * deltaTime);
         lastSpeedX = 0;
@@ -175,6 +180,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             }
         }
     }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         sprite.move(-speedX * deltaTime, 0);
         lastSpeedX = -speedX;
@@ -195,6 +201,7 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             }
         }
     }
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         sprite.move(speedX * deltaTime, 0);
         lastSpeedX = speedX;

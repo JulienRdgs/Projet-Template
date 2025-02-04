@@ -2,7 +2,7 @@
 
 PatrollingEnemy::PatrollingEnemy(float xPos, float yPos) {
     type = "patrolling";
-    sprite.setScale(0.1, 0.1);
+    sprite.setScale(0.1f, 0.1f);
     sprite.setPosition({ xPos, yPos });
     posX = xPos;
     posY = yPos;
@@ -10,6 +10,7 @@ PatrollingEnemy::PatrollingEnemy(float xPos, float yPos) {
     speedY = 100;*/
     speedX = randomSpeed[rand() % 6];
     speedY = randomSpeed[rand() % 6];
+    atk = 10;
 }
 
 void PatrollingEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, Player& player) {
@@ -18,8 +19,9 @@ void PatrollingEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std
 
         sprite.move(speedX * deltaTime, speedY * deltaTime);
         if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
-            sprite.move(-speedX * deltaTime, -speedY * deltaTime);
+            //sprite.move(-speedX * deltaTime, -speedY * deltaTime);
             player.gotHit = true;
+            player.hp -= atk;
         }
 
         for (auto& wallz : walls) {
@@ -28,8 +30,9 @@ void PatrollingEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std
                     if (sprite.getGlobalBounds().intersects(wall->sprite.getGlobalBounds())) {
                         /*speedY = -speedY;
                         speedX = -speedX;*/
-                        speedX = randomSpeed[rand() % 6];
-                        speedY = randomSpeed[rand() % 6];
+                        sprite.move(-speedX * 2 * deltaTime, -speedY * 2 * deltaTime); //pour éviter qu'ils s'enfoncent dans le murx
+                        speedX = randomSpeed[rand() % randomSpeed.size()];
+                        speedY = randomSpeed[rand() % randomSpeed.size()];
                     }
                 }
             }
