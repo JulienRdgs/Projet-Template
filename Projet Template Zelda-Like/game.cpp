@@ -8,7 +8,7 @@ Game::Game(std::vector<sf::VideoMode> modes) : /*window(sf::VideoMode(1920,1080)
 void Game::showMenu() {
     window.setView(window.getDefaultView());
     Menu menu(window.getSize().x, window.getSize().y);
-
+    baseFont.loadFromFile("assets/Arial.ttf");
     while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -83,6 +83,12 @@ void Game::showOptionsMenu() {
     volumeText.setFillColor(sf::Color::White);
     volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
 
+    backText.setFont(baseFont);
+    backText.setString("Back");
+    backText.setCharacterSize(50);
+    backText.setPosition((window.getSize().x / 6 - backText.getGlobalBounds().width) / 2, menuText.getPosition().y / 1 - backText.getCharacterSize());
+    backText.setFillColor(sf::Color::White);
+
     sf::RectangleShape volumeBar(sf::Vector2f(400, 10));
     volumeBar.setPosition(window.getSize().x / 2 - volumeBar.getSize().x / 2, window.getSize().y / 2);
     volumeBar.setFillColor(sf::Color(100, 100, 100));
@@ -103,6 +109,9 @@ void Game::showOptionsMenu() {
                 if (event.key.code == sf::Keyboard::Escape) {
                     inOptionsMenu = false;
                 }
+            }
+            if (backText.getGlobalBounds().contains((float)event.mouseButton.x, (float)event.mouseButton.y)) {
+                inOptionsMenu = false;
             }
             if (event.type == sf::Event::MouseButtonPressed) {
                 if (event.mouseButton.button == sf::Mouse::Left) {
@@ -137,6 +146,7 @@ void Game::showOptionsMenu() {
         volumeText.setPosition(window.getSize().x / 2 - volumeText.getGlobalBounds().width / 2, window.getSize().y / 3 - volumeText.getCharacterSize());
 
         window.clear();
+        window.draw(backText);
         window.draw(volumeText);
         window.draw(volumeBar);
         window.draw(volumeHandle);
