@@ -9,11 +9,25 @@ Player::Player() {
     speedX = baseSpeed;
     speedY = baseSpeed;
 
-    attackArea.setSize(sf::Vector2f(100.f, 5.f));
-    attackArea.setFillColor(sf::Color::Red);
-    attackArea.setOrigin(attackArea.getSize().x / 2, attackArea.getSize().y / 2);
+    sword.setSize(sf::Vector2f(60.f, 10.f));
+    sword.setFillColor(sf::Color::Yellow);
+    sword.setOrigin(0, sword.getSize().y / 2);
+
+    attackHitbox.setSize(sf::Vector2f(100.f, 60.f));
+    attackHitbox.setFillColor(sf::Color(255, 0, 0, 150));
+    attackHitbox.setOrigin(attackHitbox.getSize().x / 15, attackHitbox.getSize().y / 10);
 }
 void Player::update(float deltaTime) {
+    if (isAttacking) {
+        attackTimer -= deltaTime;
+        if (attackTimer <= 0) {
+            isAttacking = false;
+        }
+    }
+
+    sword.setPosition(sprite.getPosition() + swordOffset);
+    attackHitbox.setPosition(sprite.getPosition() + attackOffset);
+
     //AU CAS OU
     posX = sprite.getPosition().x;
     posY = sprite.getPosition().y;
@@ -45,39 +59,57 @@ void Player::update(float deltaTime) {
 void Player::draw(sf::RenderWindow& window) 
 {
     window.draw(sprite);
-    window.draw(attackArea);
+    window.draw(sword);
+    if (isAttacking) {
+        window.draw(attackHitbox);
+    }
 }
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
-    sf::Vector2i mousePos = sf::Mouse::getPosition(window);
-    sf::Vector2f worldMousePos = window.mapPixelToCoords(mousePos);
-    sf::Vector2f playerPos(sprite.getPosition().x + (sprite.getLocalBounds().width * sprite.getScale().x) / 2, sprite.getPosition().y + (sprite.getLocalBounds().height * sprite.getScale().y) / 2);
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking) {
+        isAttacking = true;
+        attackTimer = attackDuration;
 
-    sf::Vector2f attackDir = worldMousePos - playerPos;
-    float angle = std::atan2(attackDir.y, attackDir.x) * 180 / 3.14159f;
+        sf::Vector2f mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        sf::Vector2f playerPos = sprite.getPosition();
+        sf::Vector2f direction = mousePos - playerPos;
 
-    attackArea.setPosition(playerPos);
-    attackArea.setRotation(angle);
+        if (std::abs(direction.x) > std::abs(direction.y)) {
+            if (direction.x > 0) {
+                attackOffset = sf::Vector2f(55.f, 0.f);
+                swordOffset = sf::Vector2f(55.f, 0.f);
+                sword.setRotation(0);
+                attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
+            }
+            else {
+                attackOffset = sf::Vector2f(-90.f, 0.f);
+                swordOffset = sf::Vector2f(0.f, 0.f);
+                sword.setRotation(180);
+                attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
+            }
+        }
+        else {
+            if (direction.y > 0) {
+                attackOffset = sf::Vector2f(0.f, 55.f);
+                swordOffset = sf::Vector2f(0.f, 55.f);
+                sword.setRotation(90);
+                attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
+            }
+            else {
+                attackOffset = sf::Vector2f(0.f, -90.f);
+                swordOffset = sf::Vector2f(0.f, 0.f);
+                sword.setRotation(-90);
+                attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
+            }
+        }
 
-    float length = 75.f;
-    attackArea.setSize(sf::Vector2f(length, 5.f));
-
-    attackArea.setOrigin(attackArea.getSize().x / 10, attackArea.getSize().y / 10);
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) 
-    {
-        for (auto& enemy : enemies) 
-        {
-            sf::Vector2f enemyPos = enemy->sprite.getPosition();
-            float distance = std::sqrt(std::pow(enemyPos.x - playerPos.x, 2) + std::pow(enemyPos.y - playerPos.y, 2));
-
-            if (distance < length && attackArea.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) 
-            {
-                enemy->takeDamage(10);
+        for (auto& enemy : enemies) {
+            if (attackHitbox.getGlobalBounds().intersects(enemy->sprite.getGlobalBounds())) {
+                enemy->takeDamage(20);
             }
         }
     }
-    
+
     //MOUVEMENTS
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
         sprite.move(0, speedY * deltaTime);
