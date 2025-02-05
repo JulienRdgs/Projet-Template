@@ -319,11 +319,25 @@ void Game::updateAll() {
                         for (int j = 0; j < player.moovingBomb.size(); j++) {
                             if (obj->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
                                 player.moovingBomb.erase(player.moovingBomb.begin() + j);
+                                if (obj->breakableWall) {
+                                    obj->state = false;
+                                    theMap.wallDestroyed = true;
+                                }
                             }
                         }
                     }
                 }
             }
+        }
+        if (theMap.wallDestroyed) {
+            for (int i = 0; i < theMap.mapObjects.size(); i++) {
+                for (int j = 0; j < theMap.mapObjects[i].size(); j++) {
+                    if (theMap.mapObjects[i][j]->state == false) {
+                        theMap.mapObjects[i].erase(theMap.mapObjects[i].begin() + j);
+                    }
+                }
+            }
+            theMap.wallDestroyed = false;
         }
         //WIN CONDITION
         //if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
@@ -358,9 +372,11 @@ void Game::drawAll() {
         if (!theMap.mapObjects.empty()) {
             for (auto& objz : theMap.mapObjects) {
                 for (auto& obj : objz) {
-                    if (obj->type == "wall") {
-                        obj->sprite.setTexture(wallTexture);
+                    if (obj->type == "wall") { 
+                        if (obj->breakableWall) obj->sprite.setTexture(breakableWallTexture);
+                        else { obj->sprite.setTexture(wallTexture); }
                     }
+                    if (obj->type == "wallDebris") obj->sprite.setTexture(wallDebrisTexture);
                     else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
                     else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
                     else if (obj->type == "checkpoint") { 
@@ -437,6 +453,8 @@ void Game::loadTextures() {
     bombTexture.loadFromFile("assets/bomb.png");
     keyTexture.loadFromFile("assets/key.png");
     wallTexture.loadFromFile("assets/wall.png");
+    breakableWallTexture.loadFromFile("assets/breakableWall.png");
+    wallDebrisTexture.loadFromFile("assets/wallDebris.png");
     floorTexture.loadFromFile("assets/floor.png");
     lockTexture.loadFromFile("assets/lock.png");
     pnjTexture.loadFromFile("assets/pnj.png");

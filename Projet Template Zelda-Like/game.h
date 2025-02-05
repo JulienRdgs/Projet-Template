@@ -31,6 +31,8 @@ public:
 	sf::Texture bombTexture;
 	sf::Texture keyTexture;
 	sf::Texture wallTexture;
+	sf::Texture breakableWallTexture;
+	sf::Texture wallDebrisTexture;
 	sf::Texture floorTexture;
 	sf::Texture lockTexture;
 	sf::Texture pnjTexture;

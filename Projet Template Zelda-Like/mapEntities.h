@@ -11,7 +11,9 @@ public:
 	float posY;
 	float scaleX;
 	float scaleY;
+	bool breakableWall = false;
+	bool state = true;
 
-	MapEntities(std::string t, float xPos, float yPos, float xScale, float yScale);
+	MapEntities(std::string t, float xPos, float yPos, float xScale, float yScale, bool breakable);
 	MapEntities(std::string t, std::string lockNumber, float xPos, float yPos, float xScale, float yScale);
 };
