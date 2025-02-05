@@ -91,7 +91,7 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     window.draw(bombText);
 
 
-    hpText.setString("HP : " + std::to_string((int)hp));
+    hpText.setString(std::to_string((int)hp));
     hpText.setPosition(sprite1.getPosition().x + (sprite1.getLocalBounds().width * sprite1.getScale().x) * 1.2,
         sprite1.getPosition().y /*+ (sprite1.getLocalBounds().height * sprite1.getScale().y) /2 - hpText.getCharacterSize() /2*/);
     window.draw(hpText);

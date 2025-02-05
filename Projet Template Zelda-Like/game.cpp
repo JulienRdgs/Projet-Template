@@ -297,7 +297,9 @@ void Game::updateAll() {
             for (auto& obj : theMap.objects) {
                 if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
                     if (obj->type == "heart") {
-                        if (obj->interact(player.sprite, theMap.objects, player.inventaire)) player.hp += obj->regen;
+                        if (player.hp < player.hpMax) {
+                            if (obj->interact(player.sprite, theMap.objects, player.inventaire)) player.hp += obj->regen;
+                        }
                     }
                     else {
                         obj->interact(player.sprite, theMap.objects, player.inventaire);

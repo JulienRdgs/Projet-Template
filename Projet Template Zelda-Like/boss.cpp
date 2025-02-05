@@ -51,13 +51,25 @@ void Boss::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<st
     if (abs(player.sprite.getPosition().x - sprite.getPosition().x) < view.getSize().x 
         && abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y ) {
 
-        sprite.move(speedX * deltaTime, speedY * deltaTime);
-        if (player.gotHit == false) {
+        //sprite.move(speedX * deltaTime, speedY * deltaTime);
+
+        if (sprite.getGlobalBounds().contains(player.sprite.getPosition())) {
+                hitLimit = true;
+        }
+        else if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) == false) { 
+            hitLimit = false;
+        }
+
+        if (hitLimit == false) {
             if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
-                player.gotHit = true;
-                player.hp -= atk;
+                if (player.gotHit == false) {
+                    hitLimit = true;
+                    player.gotHit = true;
+                    player.hp -= atk;
+                }
             }
         }
+        //if (sprite.getGlobalBounds().contains(player.sprite.getPosition())) std::cout << "yo";
 
         for (auto& wallz : walls) {
             for (auto& wall : wallz) {
@@ -92,15 +104,15 @@ void Boss::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<st
         //SHOOT
         shootTimer += deltaTime;
         if (shootTimer > shootCooldown) {
-            projectileInitialPosX = sprite.getPosition().x + (sprite.getLocalBounds().width * sprite.getScale().x) / 2 - 25; // 25 = 500 * 0.1 / 2, la taille de tous les autres sprites du jeu
-            projectileInitialPosY = sprite.getPosition().y + (sprite.getLocalBounds().height * sprite.getScale().y) / 2 - 25;
+            //projectileInitialPosX = sprite.getPosition().x + (sprite.getLocalBounds().width * sprite.getScale().x) / 2 - 25; // 25 = 500 * 0.1 / 2, la taille de tous les autres sprites du jeu
+            //projectileInitialPosY = sprite.getPosition().y + (sprite.getLocalBounds().height * sprite.getScale().y) / 2 - 25;
 
-            projectiles.emplace_back(std::make_unique<Projectile>(-300, -300, projectileInitialPosX, projectileInitialPosY));
-            projectiles.emplace_back(std::make_unique<Projectile>(-300, 300, projectileInitialPosX, projectileInitialPosY));
-            projectiles.emplace_back(std::make_unique<Projectile>(300, 300, projectileInitialPosX, projectileInitialPosY));
-            projectiles.emplace_back(std::make_unique<Projectile>(300, -300, projectileInitialPosX, projectileInitialPosY));
-            
-            shootTimer = 0;
+            //projectiles.emplace_back(std::make_unique<Projectile>(-300, -300, projectileInitialPosX, projectileInitialPosY));
+            //projectiles.emplace_back(std::make_unique<Projectile>(-300, 300, projectileInitialPosX, projectileInitialPosY));
+            //projectiles.emplace_back(std::make_unique<Projectile>(300, 300, projectileInitialPosX, projectileInitialPosY));
+            //projectiles.emplace_back(std::make_unique<Projectile>(300, -300, projectileInitialPosX, projectileInitialPosY));
+            //
+            //shootTimer = 0;
         }
     }
 }

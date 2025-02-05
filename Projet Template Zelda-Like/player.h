@@ -11,8 +11,8 @@ class Enemy;
 
 class Player : public Entity {
 public:
-	float hp = 100;
-	float hpMax = 100;
+	int hp = 100;
+	int hpMax = 100;
 	sf::Text hpText;
 	float atk = 10;
 	float bombAtk = atk * 3;
