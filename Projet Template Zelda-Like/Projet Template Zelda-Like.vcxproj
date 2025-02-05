@@ -145,6 +145,7 @@
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="heart.cpp" />
     <ClCompile Include="interactable.cpp" />
     <ClCompile Include="key.cpp" />
     <ClCompile Include="main.cpp" />
@@ -162,6 +163,7 @@
     <ClInclude Include="enemy.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="heart.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="interactable.h" />
     <ClInclude Include="key.h" />

@@ -5,12 +5,15 @@
 #include "mapEntities.h"
 #include "bomb.h"
 #include "key.h"
+#include "heart.h"
 
 class Enemy;
 
 class Player : public Entity {
 public:
 	float hp = 100;
+	float hpMax = 100;
+	sf::Text hpText;
 	float atk = 10;
 	float bombAtk = atk * 3;
 	bool potion = false;

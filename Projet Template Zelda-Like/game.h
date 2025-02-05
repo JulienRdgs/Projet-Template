@@ -39,9 +39,11 @@ public:
 	sf::Texture explosionTexture;
 	sf::Texture bossTexture;
 	sf::Texture projectileTexture;
+	sf::Texture heartTexture;
 
 	sf::Sprite keyIcone;
 	sf::Sprite bombIcone;
+	sf::Sprite heartIcone;
 	sf::Sprite wallSprite;
 	sf::Sprite floorSprite;
 	sf::Sprite lockSprite;

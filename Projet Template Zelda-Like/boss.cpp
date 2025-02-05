@@ -52,9 +52,11 @@ void Boss::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<st
         && abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y ) {
 
         sprite.move(speedX * deltaTime, speedY * deltaTime);
-        if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
-            player.gotHit = true;
-            player.hp -= atk;
+        if (player.gotHit == false) {
+            if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
+                player.gotHit = true;
+                player.hp -= atk;
+            }
         }
 
         for (auto& wallz : walls) {
@@ -79,9 +81,11 @@ void Boss::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<st
         }
         for (auto& obj : projectiles) {
             if (obj->sprite.getGlobalBounds().intersects(player.sprite.getGlobalBounds())) {
-                obj->state = false;
-                player.hp -= atk;
-                player.gotHit = true;
+                if (player.gotHit == false) {
+                    obj->state = false;
+                    player.gotHit = true;
+                    player.hp -= atk;
+                }
             }
         }
 

@@ -296,7 +296,12 @@ void Game::updateAll() {
         if (!theMap.objects.empty()) {
             for (auto& obj : theMap.objects) {
                 if (player.sprite.getGlobalBounds().intersects(obj->sprite.getGlobalBounds())) {
-                    obj->interact(player.sprite, theMap.objects, player.inventaire);
+                    if (obj->type == "heart") {
+                        if (obj->interact(player.sprite, theMap.objects, player.inventaire)) player.hp += obj->regen;
+                    }
+                    else {
+                        obj->interact(player.sprite, theMap.objects, player.inventaire);
+                    }
                 }
             }
             for (int i = 0; i < theMap.objects.size(); i++) {
@@ -336,8 +341,8 @@ void Game::updateAll() {
         player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
         + keyIcone.getGlobalBounds().height * keyIcone.getScale().y);
 
-        bombIcone.setPosition(keyIcone.getPosition().x + (float)view.getSize().x * 0.94 - bombIcone.getGlobalBounds().width * bombIcone.getScale().x, keyIcone.getPosition().y);
-
+        bombIcone.setPosition(keyIcone.getPosition().x + (float)view.getSize().x - (bombIcone.getLocalBounds().width * bombIcone.getScale().x)*2, keyIcone.getPosition().y);
+        heartIcone.setPosition(keyIcone.getPosition().x, keyIcone.getPosition().y + (float)view.getSize().y - heartIcone.getLocalBounds().height * bombIcone.getScale().y);
         //TIMER UPDATE
         
     }
@@ -370,7 +375,8 @@ void Game::drawAll() {
             }
         }
         player.sprite.setTexture(playerTexture);
-        player.draw(window, keyIcone, bombIcone, bombTexture, patrollingTexture);
+        player.draw(window, heartIcone, bombIcone, bombTexture, patrollingTexture);
+        if (player.key1) window.draw(keyIcone);
         if (!theMap.enemies.empty()) {
             for (auto& enemy : theMap.enemies) {
                 if (enemy->type == "chaser") enemy->sprite.setTexture(chaserTexture);
@@ -384,6 +390,7 @@ void Game::drawAll() {
                 if (obj->type == "bomb") obj->sprite.setTexture(bombTexture);
                 else if (obj->type == "key") obj->sprite.setTexture(keyTexture);
                 else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
+                else if (obj->type == "heart") obj->sprite.setTexture(heartTexture);
                 window.draw(obj->sprite);
             }
         }
@@ -436,6 +443,7 @@ void Game::loadTextures() {
     explosionTexture.loadFromFile("assets/explosion.png");
     bossTexture.loadFromFile("assets/boss.png");
     projectileTexture.loadFromFile("assets/projectile.png");
+    heartTexture.loadFromFile("assets/heart.png");
 
     baseFont.loadFromFile("assets/Arial.ttf");
 
@@ -484,11 +492,16 @@ void Game::loadTextures() {
     player.bombText.setFont(baseFont);
     player.bombText.setCharacterSize(25);
     player.bombText.setFillColor(sf::Color::White);
+    player.hpText.setFont(baseFont);
+    player.hpText.setCharacterSize(25);
+    player.hpText.setFillColor(sf::Color::Red);
 
     keyIcone.setTexture(keyTexture);
     keyIcone.setScale(0.075f, 0.075f);
     bombIcone.setTexture(bombTexture);
     bombIcone.setScale(0.075f, 0.075f);
+    heartIcone.setTexture(heartTexture);
+    heartIcone.setScale(0.075f, 0.075f);
     
     wallSprite.setTexture(wallTexture);
     floorSprite.setTexture(floorTexture);

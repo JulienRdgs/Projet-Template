@@ -10,6 +10,7 @@ public:
 	bool state = true;
 	std::string type;
 	sf::Sprite sprite;
+	float regen = 0;
 
 	Interactable();
 

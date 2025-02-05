@@ -63,6 +63,12 @@ void Map::loadMap(Player& player) {
 				}
 				yInteractables++;
 			}
+			else if (line[i] == 'h') {
+				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
+				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
+				objects.emplace_back(std::make_shared<Heart>("heart", (float)i * 50.f, (float)y * 50.f));
+				yInteractables++;
+			}
 			else if (line[i] == 'P') {
 				mapObjects.emplace_back(std::vector<std::unique_ptr<MapEntities>>());
 				mapObjects[y].emplace_back(std::make_unique<MapEntities>("floor", (float)i * 50.f, (float)y * 50.f, 0.1f, 0.1f));
