@@ -28,6 +28,10 @@ void Boss::update(float deltaTime) {
             }
         }
     }
+    if (health < 0)
+    {
+        state = false;
+    }
 }
 
 void Boss::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) {

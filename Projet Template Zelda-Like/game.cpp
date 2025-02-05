@@ -297,6 +297,10 @@ void Game::updateAll() {
             }
             for (int i = 0; i < theMap.enemies.size(); i++) {                     
                 if (theMap.enemies[i]->state == false) {
+                    if (theMap.enemies[i]->type == "boss") {
+                        win = true;
+                        playing = false;
+                    }
                     theMap.enemies.erase(theMap.enemies.begin() + i);
                 }
             }
@@ -351,18 +355,17 @@ void Game::updateAll() {
             }
             theMap.wallDestroyed = false;
         }
-        //WIN CONDITION
-        //if (player.sprite.getPosition().x > window.getSize().x || player.sprite.getPosition().y > window.getSize().y ///////////////////////MAUVAISE CONDITION
-        //    || player.sprite.getPosition().x < 0 || player.sprite.getPosition().y < 0) {
-        //    win = true;
-        //    playing = false;
-        //}
+        /*WIN CONDITION*/
+        /*if (theMap.enemies[i]->type == "boss") {
+            win = true;
+            playing = false;
+        }*/
         //LOSE CONDITION
-        /*if (player.hp <= 0) {
+        if (player.hp <= 0) {
             playing = false;
             win = false;
             gameOver = true;
-        }*/
+        }
         // UPDATE POSITION INCONES (clés, potions etc)
         keyIcone.setPosition(player.sprite.getPosition().x + (player.sprite.getGlobalBounds().width * player.sprite.getScale().x)/2 - view.getSize().x / 2
         + keyIcone.getGlobalBounds().width * keyIcone.getScale().x,

@@ -154,7 +154,6 @@
     <ClCompile Include="menu.cpp" />
     <ClCompile Include="patrolling.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="PNJ.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bomb.h" />
@@ -172,7 +171,6 @@
     <ClInclude Include="menu.h" />
     <ClInclude Include="patrolling.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="PNJ.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
