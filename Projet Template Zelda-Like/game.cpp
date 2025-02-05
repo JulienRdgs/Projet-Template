@@ -267,11 +267,19 @@ void Game::updateAll() {
             for (auto& row : theMap.mapObjects) {
                 for (auto& obj : row) {
                     if (obj->type == "pnj") {
-                        obj->sprite.move(50.f * deltaTime, 0.f);
+                        if (pnjMoveTime < pnjMoveDuration && pnjMoveDistance < maxDistance) {
+                            obj->sprite.move(20.f * deltaTime, 0.f);
+                            pnjMoveTime += deltaTime;
+                            pnjMoveDistance += 5.f * deltaTime;
+                        }
+                        else {
+                            obj->sprite.setPosition(obj->sprite.getPosition());
+                        }
                     }
                 }
             }
         }
+
 
         //COLLISIONS
         if (!theMap.enemies.empty()) {
@@ -314,6 +322,10 @@ void Game::updateAll() {
         }
         for (auto& objz : theMap.mapObjects) {
             for (auto& obj : objz) {
+                if (obj->type == "pnj") {
+                    dialogue.setPosition(obj->sprite.getPosition().x + obj->sprite.getLocalBounds().width * obj->sprite.getScale().x,
+                        obj->sprite.getPosition().y - dialogue.getCharacterSize() * 3);
+                }
                 if (obj->type == "wall") {
                     if (!player.moovingBomb.empty()) {
                         for (int j = 0; j < player.moovingBomb.size(); j++) {
@@ -378,7 +390,11 @@ void Game::drawAll() {
                     }
                     if (obj->type == "wallDebris") obj->sprite.setTexture(wallDebrisTexture);
                     else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
-                    else if (obj->type == "pnj") obj->sprite.setTexture(pnjTexture);
+                    else if (obj->type == "pnj")
+                    {
+                        obj->sprite.setTexture(pnjTexture);
+                        pnjSprite = obj->sprite;
+                    }
                     else if (obj->type == "checkpoint") { 
                         if (obj->sprite.getPosition() == player.checkpoint) {
                             obj->sprite.setTexture(checkpointOnTexture);
@@ -392,6 +408,7 @@ void Game::drawAll() {
                 }
             }
         }
+        window.draw(pnjSprite);
         player.sprite.setTexture(playerTexture);
         player.draw(window, heartIcone, bombIcone, bombTexture, patrollingTexture);
         if (player.key1) window.draw(keyIcone);
@@ -528,8 +545,8 @@ void Game::loadTextures() {
     lockSprite.setTexture(lockTexture);
 
     dialogue.setFont(baseFont);
-    dialogue.setString("Bonjour, aventurier !Faites attention aux dangers qui vous attendent.");
-    dialogue.setCharacterSize(24);
+    dialogue.setString("Bonjour, aventurier ! \n Faites attention aux dangers \n qui vous attendent.");
+    dialogue.setCharacterSize(15);
     dialogue.setFillColor(sf::Color::White);
     dialogue.setPosition(view.getCenter().x - 200, view.getCenter().y + 100);
     window.draw(dialogue);
@@ -538,7 +555,7 @@ void Game::loadTextures() {
 //void Game::setupSpawns() {
 //    enemies.emplace_back(std::make_unique<ChaserEnemy>(700, 700));
 //    enemies.emplace_back(std::make_unique<PatrollingEnemy>(500, 500));
-//    enemies.emplace_back(std::make_unique<PatrollingEnemy>(300, 300));
+//    enemies.emplace_back(std::make_unique<PatrollingEnemy>(300, 300));"
 //    enemies.emplace_back(std::make_unique<PatrollingEnemy>(900, 200));
 //
 //    objects.emplace_back(std::make_unique<Potion>());
