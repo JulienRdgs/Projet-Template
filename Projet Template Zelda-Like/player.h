@@ -38,7 +38,9 @@ public:
 	float lastSpeedX = 0;
 	float lastSpeedY = 0;
 
-	sf::RectangleShape sword;
+	sf::Sprite sword1, sword2, sword3;
+	sf::Texture sword1Texture, sword2Texture, sword3Texture;
+
 	sf::RectangleShape attackHitbox;
 	bool isAttacking = false;
 	float attackDuration = 0.2f;

@@ -43,11 +43,10 @@ public:
 	sf::Texture projectileTexture;
 	sf::Texture heartTexture;
 
-	// Variables pour suivre la durée et la distance de déplacement
 	float pnjMoveTime = 0.f;
-	const float pnjMoveDuration = 3.f; // Durée en secondes avant que le PNJ s'arrête
+	const float pnjMoveDuration = 3.f;
 	float pnjMoveDistance = 0.f;
-	const float maxDistance = 200.f; // Distance maximale avant que le PNJ s'arrête
+	const float maxDistance = 200.f;
 
 	sf::Sprite keyIcone;
 	sf::Sprite bombIcone;

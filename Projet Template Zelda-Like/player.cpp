@@ -9,9 +9,17 @@ Player::Player() {
     speedX = baseSpeed;
     speedY = baseSpeed;
 
-    sword.setSize(sf::Vector2f(60.f, 10.f));
-    sword.setFillColor(sf::Color::Yellow);
-    sword.setOrigin(0, sword.getSize().y / 2);
+    sword1Texture.loadFromFile("assets/sword1.png");
+    sword2Texture.loadFromFile("assets/sword2.png");
+    sword3Texture.loadFromFile("assets/sword3.png");
+
+    sword1.setTexture(sword1Texture);
+    sword2.setTexture(sword2Texture);
+    sword3.setTexture(sword3Texture);
+
+    sword1.setOrigin(0, sword1.getGlobalBounds().height / 2);
+    sword2.setOrigin(0, sword2.getGlobalBounds().height / 2);
+    sword3.setOrigin(0, sword3.getGlobalBounds().height / 2);
 
     attackHitbox.setSize(sf::Vector2f(100.f, 60.f));
     attackHitbox.setFillColor(sf::Color(255, 0, 0, 150));
@@ -27,8 +35,28 @@ void Player::update(float deltaTime) {
         }
     }
 
-    sword.setPosition(sprite.getPosition() + swordOffset);
+    sword1.setPosition(sprite.getPosition() + swordOffset);
+    sword2.setPosition(sprite.getPosition() + swordOffset);
+    sword3.setPosition(sprite.getPosition() + swordOffset);
     attackHitbox.setPosition(sprite.getPosition() + attackOffset);
+
+    if (isAttacking) {
+        if (attackTimer > 0.15f) {
+            sword1.setColor(sf::Color::White);
+            sword2.setColor(sf::Color(255, 255, 255, 0));
+            sword3.setColor(sf::Color(255, 255, 255, 0));
+        }
+        else if (attackTimer > 0.1f) {
+            sword1.setColor(sf::Color(255, 255, 255, 0));
+            sword2.setColor(sf::Color::White);
+            sword3.setColor(sf::Color(255, 255, 255, 0));
+        }
+        else {
+            sword1.setColor(sf::Color(255, 255, 255, 0));
+            sword2.setColor(sf::Color(255, 255, 255, 0));
+            sword3.setColor(sf::Color::White);
+        }
+    }
 
     //AU CAS OU
     posX = sprite.getPosition().x;
@@ -77,7 +105,12 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     window.draw(sprite1);
     window.draw(sprite2);
     window.draw(sprite);
-    window.draw(sword);
+    window.draw(sprite1);
+    window.draw(sprite2);
+    window.draw(sprite);
+    window.draw(sword1);
+    window.draw(sword2);
+    window.draw(sword3);
 
     bombText.setString(std::to_string(bombCount));
     bombText.setPosition(sprite2.getPosition().x + (sprite2.getLocalBounds().width * sprite2.getScale().x),
@@ -115,13 +148,17 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             if (direction.x > 0) {
                 attackOffset = sf::Vector2f(55.f, 0.f);
                 swordOffset = sf::Vector2f(55.f, 0.f);
-                sword.setRotation(0);
+                sword1.setRotation(0);
+                sword2.setRotation(0);
+                sword3.setRotation(0);
                 attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
             }
             else {
                 attackOffset = sf::Vector2f(-90.f, 0.f);
-                swordOffset = sf::Vector2f(0.f, 0.f);
-                sword.setRotation(180);
+                swordOffset = sf::Vector2f(-90.f, 0.f);
+                sword1.setRotation(180);
+                sword2.setRotation(180);
+                sword3.setRotation(180);
                 attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
             }
         }
@@ -129,13 +166,17 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
             if (direction.y > 0) {
                 attackOffset = sf::Vector2f(0.f, 55.f);
                 swordOffset = sf::Vector2f(0.f, 55.f);
-                sword.setRotation(90);
+                sword1.setRotation(90);
+                sword2.setRotation(90);
+                sword3.setRotation(90);
                 attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
             }
             else {
                 attackOffset = sf::Vector2f(0.f, -90.f);
-                swordOffset = sf::Vector2f(0.f, 0.f);
-                sword.setRotation(-90);
+                swordOffset = sf::Vector2f(0.f, -90.f);
+                sword1.setRotation(-90);
+                sword2.setRotation(-90);
+                sword3.setRotation(-90);
                 attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
             }
         }
