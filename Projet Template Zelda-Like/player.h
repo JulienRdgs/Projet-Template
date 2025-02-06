@@ -37,6 +37,7 @@ public:
 	std::vector<std::shared_ptr<Bomb>> moovingBomb;
 	float lastSpeedX = 0;
 	float lastSpeedY = 0;
+	bool hitLimit = false;
 
 	sf::Sprite sword1, sword2, sword3;
 	sf::Texture sword1Texture, sword2Texture, sword3Texture;
@@ -56,7 +57,7 @@ public:
 	void update(float deltaTime) override;
 	void draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& sprite2, sf::Texture& texture1, sf::Texture& texture2) override;
 
-	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies);
+	void handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall, std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies, sf::Sound& slashSound);
 
 	float checkpointHp = 100;
 	bool checkpointKey1 = false;

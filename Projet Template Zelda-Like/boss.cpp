@@ -54,16 +54,16 @@ void Boss::behavior(float& deltaTime, sf::View& view, std::vector<std::vector<st
         sprite.move(speedX * deltaTime, speedY * deltaTime);
 
         if (sprite.getGlobalBounds().contains(player.sprite.getPosition())) {
-            hitLimit = true;
+            player.hitLimit = true;
         }
         else if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) == false) {
-            hitLimit = false;
+            player.hitLimit = false;
         }
 
-        if (hitLimit == false) {
+        if (player.hitLimit == false) {
             if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
                 if (player.gotHit == false) {
-                    hitLimit = true;
+                    player.hitLimit = true;
                     player.gotHit = true;
                     player.hp -= atk;
                 }

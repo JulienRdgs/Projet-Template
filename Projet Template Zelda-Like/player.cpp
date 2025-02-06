@@ -135,8 +135,9 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
 }
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
-    std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies) {
+    std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies, sf::Sound& slashSound) {
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking) {
+        slashSound.play();
         isAttacking = true;
         attackTimer = attackDuration;
 

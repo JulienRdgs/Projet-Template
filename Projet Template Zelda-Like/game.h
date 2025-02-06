@@ -68,6 +68,12 @@ public:
 	sf::Text dialogue;
 	sf::Text backText;
 
+	sf::Music musicSound;
+	sf::SoundBuffer swordSlashBuffer;
+	sf::SoundBuffer explosionBuffer;
+	sf::Sound swordSlashSound;
+	sf::Sound explosionSound;
+
 	float dialogueTimer = 0.0f;
 	float dialogueLimit = 10.0f;
 	std::string dialogueText = "";

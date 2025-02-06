@@ -256,7 +256,7 @@ void Game::updateAll() {
     if (playing) {
         view.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
         player.update(deltaTime);
-        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies);
+        player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies, swordSlashSound);
 
         if (player.pnj) {
             dialogueTimer += deltaTime;
@@ -291,6 +291,7 @@ void Game::updateAll() {
                         if (enemy->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
                             enemy->takeDamage(player.bombAtk);
                             player.moovingBomb.erase(player.moovingBomb.begin() + j);
+                            explosionSound.play();
                         }
                     }
                 }
@@ -335,6 +336,7 @@ void Game::updateAll() {
                         for (int j = 0; j < player.moovingBomb.size(); j++) {
                             if (obj->sprite.getGlobalBounds().intersects(player.moovingBomb[j]->sprite.getGlobalBounds())) {
                                 player.moovingBomb.erase(player.moovingBomb.begin() + j);
+                                explosionSound.play();
                                 if (obj->breakableWall) {
                                     obj->state = false;
                                     theMap.wallDestroyed = true;
@@ -552,7 +554,14 @@ void Game::loadTextures() {
     dialogue.setCharacterSize(15);
     dialogue.setFillColor(sf::Color::White);
     dialogue.setPosition(view.getCenter().x - 200, view.getCenter().y + 100);
-    window.draw(dialogue);
+
+    swordSlashBuffer.loadFromFile("assets/sword sound.wav");
+    explosionBuffer.loadFromFile("assets/explosion sound.wav");
+
+    swordSlashSound.setBuffer(swordSlashBuffer);
+    swordSlashSound.setVolume(10);
+    explosionSound.setBuffer(explosionBuffer);
+    explosionSound.setVolume(10);
 }
 
 //void Game::setupSpawns() {

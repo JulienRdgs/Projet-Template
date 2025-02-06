@@ -17,11 +17,22 @@ void PatrollingEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std
     if (abs(player.sprite.getPosition().x - sprite.getPosition().x) < view.getSize().x /1.7
         && abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y /1.7) {
 
+        if (sprite.getGlobalBounds().contains(player.sprite.getPosition())) {
+            player.hitLimit = true;
+        }
+        else if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds()) == false) {
+            player.hitLimit = false;
+        }
         sprite.move(speedX * deltaTime, speedY * deltaTime);
-        if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
-            //sprite.move(-speedX * deltaTime, -speedY * deltaTime);
-            player.gotHit = true;
-            player.hp -= atk;
+
+        if (player.hitLimit == false) {
+            if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
+                if (player.gotHit == false) {
+                    player.hitLimit = true;
+                    player.gotHit = true;
+                    player.hp -= atk;
+                }
+            }
         }
 
         for (auto& wallz : walls) {

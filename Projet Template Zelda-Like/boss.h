@@ -27,7 +27,6 @@ public:
     std::vector<std::unique_ptr<Projectile<float>>> projectiles;
     float projectileInitialPosX = 0;
     float projectileInitialPosY = 0;
-    bool hitLimit = false;
 
     Boss(float xPos, float yPos);
 
