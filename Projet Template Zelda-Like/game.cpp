@@ -270,18 +270,20 @@ void Game::updateAll() {
             dialogueTimer += deltaTime;
         }
 
-        if (player.pnjMove)
-        {
-            for (auto& row : theMap.mapObjects) {
-                for (auto& obj : row) {
-                    if (obj->type == "pnj") {
-                        if (pnjMoveTime < pnjMoveDuration && pnjMoveDistance < maxDistance) {
-                            obj->sprite.move(20.f * deltaTime, 0.f);
-                            pnjMoveTime += deltaTime;
-                            pnjMoveDistance += 5.f * deltaTime;
-                        }
-                        else {
-                            obj->sprite.setPosition(obj->sprite.getPosition());
+        if (pnjPositionReached == false) {
+            if (player.pnjMove) {
+                for (auto& row : theMap.mapObjects) {
+                    for (auto& obj : row) {
+                        if (obj->type == "pnj") {
+                            if (pnjMoveTime < pnjMoveDuration && pnjMoveDistance < maxDistance) {
+                                obj->sprite.move(20.f * deltaTime, 0.f);
+                                pnjMoveTime += deltaTime;
+                                pnjMoveDistance += 5.f * deltaTime;
+                            }
+                            else {
+                                pnjPositionReached = true;
+                                pnjFinalPosition = obj->sprite.getPosition();
+                            }
                         }
                     }
                 }
@@ -343,6 +345,9 @@ void Game::updateAll() {
                 if (obj->type == "pnj") {
                     dialogue.setPosition(obj->sprite.getPosition().x + obj->sprite.getLocalBounds().width * obj->sprite.getScale().x,
                         obj->sprite.getPosition().y - dialogue.getCharacterSize() * 3);
+                    if (pnjPositionReached) {
+                        obj->sprite.setPosition(pnjFinalPosition);
+                    }
                 }
                 if (obj->type == "wall") {
                     if (!player.moovingBomb.empty()) {

@@ -24,6 +24,8 @@ public:
 	bool win = false;
 	bool gameOver = false;
 	bool pause = false;
+	bool pnjPositionReached = false;
+	sf::Vector2f pnjFinalPosition = { 0,0 };
 
 	sf::Texture playerTexture;
 	sf::Texture chaserTexture;
