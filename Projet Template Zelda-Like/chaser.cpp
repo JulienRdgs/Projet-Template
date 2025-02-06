@@ -25,7 +25,7 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 		&& abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y /3) {
 
 		if (posX > playerPosX) {
-			//sprite.move(-speedX * deltaTime, 0);
+			sprite.move(-speedX * deltaTime, 0);
 			if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 				if (player.gotHit == false) {
 					/*playing = false;
@@ -43,7 +43,7 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 			}
 		}
 		if (posX < playerPosX) {
-			//sprite.move(speedX * deltaTime, 0);
+			sprite.move(speedX * deltaTime, 0);
 			if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 				if (player.gotHit == false) {
 					/*playing = false;
@@ -61,7 +61,7 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 			}
 		}
 		if (posY > playerPosY) {
-			//sprite.move(0, -speedY * deltaTime);
+			sprite.move(0, -speedY * deltaTime);
 			if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 				if (player.gotHit == false) {
 					/*playing = false;
@@ -79,7 +79,7 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 			}
 		}
 		if (posY < playerPosY) {
-			//sprite.move(0, speedY * deltaTime);
+			sprite.move(0, speedY * deltaTime);
 			if (player.sprite.getGlobalBounds().intersects(sprite.getGlobalBounds())) {
 				if (player.gotHit == false) {
 					/*playing = false;
