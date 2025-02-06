@@ -5,8 +5,8 @@
 class Interactable {
 public:
 	std::string keyNumber = "null";
-	float posX;
-	float posY;
+	float posX = 0;
+	float posY = 0;
 	bool state = true;
 	std::string type;
 	sf::Sprite sprite;
