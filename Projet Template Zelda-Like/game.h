@@ -75,7 +75,7 @@ public:
 	sf::Sound explosionSound;
 
 	float dialogueTimer = 0.0f;
-	float dialogueLimit = 10.0f;
+	float dialogueLimit = 3.0f;
 	std::string dialogueText = "";
 
 	Game(std::vector<sf::VideoMode> modes);

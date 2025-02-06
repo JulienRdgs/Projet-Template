@@ -136,10 +136,20 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     hpText.setPosition(sprite1.getPosition().x + (sprite1.getLocalBounds().width * sprite1.getScale().x) * 1.2,
         sprite1.getPosition().y /*+ (sprite1.getLocalBounds().height * sprite1.getScale().y) /2 - hpText.getCharacterSize() /2*/);
     window.draw(hpText);
+
+    if (hitboxVisible)
+    {
+        window.draw(attackHitbox);
     }
+}
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
     std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies, sf::Sound& slashSound) {
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+        hitboxVisible = !hitboxVisible;
+    }
+
     if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking && attackCooldownTimer <= 0) {
         slashSound.play();
         isAttacking = true;
@@ -152,8 +162,8 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
 
         if (std::abs(direction.x) > std::abs(direction.y)) {
             if (direction.x > 0) { //DROITE
-                attackOffset = sf::Vector2f(50.f, 20.f);
-                swordOffset = sf::Vector2f(45.f, 20.f);
+                attackOffset = sf::Vector2f(55.f, 20.f);
+                swordOffset = sf::Vector2f(55.f, 20.f);
                 sword1.setRotation(0);
                 sword2.setRotation(0);
                 sword3.setRotation(0);

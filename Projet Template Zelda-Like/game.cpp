@@ -452,7 +452,7 @@ void Game::drawAll() {
         }
         if (dialogueTimer > 0)
         {
-            if (dialogueTimer < 10)
+            if (dialogueTimer < dialogueLimit)
             {
                 
                 window.draw(dialogue);

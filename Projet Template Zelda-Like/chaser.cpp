@@ -37,6 +37,10 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 				}
 				else { sprite.move(speedX * deltaTime, 0); }
 			}
+			if (player.attackHitbox.getGlobalBounds().intersects(sprite.getGlobalBounds()) && player.isAttacking)
+			{
+				sprite.move(speedX * 0.5f, 0);
+			}
 		}
 		if (posX < playerPosX) {
 			sprite.move(speedX * deltaTime, 0);
@@ -50,6 +54,10 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 					player.hp -= atk;
 				}
 				else { sprite.move(-speedX * deltaTime, 0); }
+			}
+			if (player.attackHitbox.getGlobalBounds().intersects(sprite.getGlobalBounds()) && player.isAttacking)
+			{
+				sprite.move(-speedX * 0.5f, 0);
 			}
 		}
 		if (posY > playerPosY) {
@@ -65,6 +73,10 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 				}
 				else { sprite.move(0, speedY * deltaTime); }
 			}
+			if (player.attackHitbox.getGlobalBounds().intersects(sprite.getGlobalBounds()) && player.isAttacking)
+			{
+				sprite.move(0, speedY * 0.5f);
+			}
 		}
 		if (posY < playerPosY) {
 			sprite.move(0, speedY * deltaTime);
@@ -79,6 +91,10 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 				}
 				else { sprite.move(0, -speedY * deltaTime); }
 			}
+		}
+		if (player.attackHitbox.getGlobalBounds().intersects(sprite.getGlobalBounds()) && player.isAttacking)
+		{
+			sprite.move(0, -speedY * 0.5f);
 		}
 	}
 }

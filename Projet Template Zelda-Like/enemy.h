@@ -11,6 +11,10 @@ public:
 	float health = 30;
 	float atk = 0;
 
+	sf::Color originalColor = sf::Color::White;
+	float damageTimer = 0;
+	float damageDuration = 0.5f;
+
 	Enemy();
 	~Enemy();
 

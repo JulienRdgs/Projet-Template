@@ -11,6 +11,7 @@ class Enemy;
 
 class Player : public Entity {
 public:
+	bool hitboxVisible = false;
 	float hp = 100;
 	float hpMax = 100;
 	sf::Text hpText;
