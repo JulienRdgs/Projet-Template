@@ -21,9 +21,9 @@ Player::Player() {
     sword2.setOrigin(0, sword2.getGlobalBounds().height / 2);
     sword3.setOrigin(0, sword3.getGlobalBounds().height / 2);
 
-    attackHitbox.setSize(sf::Vector2f(100.f, 60.f));
+    attackHitbox.setSize(sf::Vector2f(60.f, 25.f));
     attackHitbox.setFillColor(sf::Color(255, 0, 0, 150));
-    attackHitbox.setOrigin(attackHitbox.getSize().x / 15, attackHitbox.getSize().y / 10);
+    attackHitbox.setOrigin(attackHitbox.getSize().x / 2, attackHitbox.getSize().y / 2);
 }
 void Player::update(float deltaTime) {
     if (hp > hpMax) hp = hpMax;
@@ -128,10 +128,6 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     hpText.setPosition(sprite1.getPosition().x + (sprite1.getLocalBounds().width * sprite1.getScale().x) * 1.2,
         sprite1.getPosition().y /*+ (sprite1.getLocalBounds().height * sprite1.getScale().y) /2 - hpText.getCharacterSize() /2*/);
     window.draw(hpText);
-
-    if (isAttacking) {
-        window.draw(attackHitbox);
-    }
 }
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
@@ -146,39 +142,39 @@ void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite w
         direction = mousePos - playerPos;
 
         if (std::abs(direction.x) > std::abs(direction.y)) {
-            if (direction.x > 0) {
-                attackOffset = sf::Vector2f(55.f, 0.f);
-                swordOffset = sf::Vector2f(55.f, 0.f);
+            if (direction.x > 0) { //DROITE
+                attackOffset = sf::Vector2f(50.f, 20.f);
+                swordOffset = sf::Vector2f(45.f, 20.f);
                 sword1.setRotation(0);
                 sword2.setRotation(0);
                 sword3.setRotation(0);
-                attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
+                attackHitbox.setSize(sf::Vector2f(60.f, 25.f));
             }
-            else {
-                attackOffset = sf::Vector2f(-90.f, 0.f);
-                swordOffset = sf::Vector2f(-90.f, 0.f);
+            else { //GAUCHE
+                attackOffset = sf::Vector2f(-10.f, 20.f);
+                swordOffset = sf::Vector2f(-10.f, 20.f);
                 sword1.setRotation(180);
                 sword2.setRotation(180);
                 sword3.setRotation(180);
-                attackHitbox.setSize(sf::Vector2f(90.f, 40.f));
+                attackHitbox.setSize(sf::Vector2f(60.f, 25.f));
             }
         }
-        else {
+        else { //BAS
             if (direction.y > 0) {
-                attackOffset = sf::Vector2f(0.f, 55.f);
-                swordOffset = sf::Vector2f(0.f, 55.f);
+                attackOffset = sf::Vector2f(40.f, 30.f);
+                swordOffset = sf::Vector2f(20.f, 50.f);
                 sword1.setRotation(90);
                 sword2.setRotation(90);
                 sword3.setRotation(90);
-                attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
+                attackHitbox.setSize(sf::Vector2f(25.f, 60.f));
             }
-            else {
-                attackOffset = sf::Vector2f(0.f, -90.f);
-                swordOffset = sf::Vector2f(0.f, -90.f);
+            else { //HAUT
+                attackOffset = sf::Vector2f(40.f, -30.f);
+                swordOffset = sf::Vector2f(20.f, -10.f);
                 sword1.setRotation(-90);
                 sword2.setRotation(-90);
                 sword3.setRotation(-90);
-                attackHitbox.setSize(sf::Vector2f(40.f, 90.f));
+                attackHitbox.setSize(sf::Vector2f(25.f, 60.f));
             }
         }
 
