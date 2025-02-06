@@ -16,4 +16,6 @@ private:
     int selectedIndex;
     sf::Font font;
     std::vector<sf::Text> menuOptions;
+    sf::Texture backgroundTexture;
+    sf::Sprite backgroundSprite;
 };
