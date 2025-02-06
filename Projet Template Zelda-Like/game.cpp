@@ -159,9 +159,16 @@ void Game::showOptionsMenu() {
 void Game::gameLoop() {
     while (window.isOpen()) {
         deltaTime = Clock.restart().asSeconds();
+        /*std::thread updateThread(updateAll);
+        updateThread.join();*/
         updateAll();
         pollEvent();
-        drawAll();
+        try {
+            drawAll();
+        }
+        catch (const std::exception& e) {
+            std::cerr << "Exception attrapée : " << e.what() << std::endl;
+        }
     }
 }
 
@@ -255,6 +262,7 @@ void Game::pollEvent() {
 void Game::updateAll() {
     if (playing) {
         view.setCenter(player.sprite.getPosition().x, player.sprite.getPosition().y);
+        //std::thread playerUpdateThread(player.update(deltaTime));
         player.update(deltaTime);
         player.handleInput(deltaTime, window, wallSprite, theMap.mapObjects, view, theMap.enemies, swordSlashSound);
 
@@ -312,6 +320,11 @@ void Game::updateAll() {
                     if (obj->type == "heart") {
                         if (player.hp < player.hpMax) {
                             if (obj->interact(player.sprite, theMap.objects, player.inventaire)) player.hp += obj->regen;
+                        }
+                    }
+                    else if (obj->type == "bomb") {
+                        if (player.bombCount < player.bombCountMax) {
+                            obj->interact(player.sprite, theMap.objects, player.inventaire);
                         }
                     }
                     else {
@@ -374,7 +387,7 @@ void Game::updateAll() {
         player.sprite.getPosition().y + (player.sprite.getGlobalBounds().height * player.sprite.getScale().y) / 2 - view.getSize().y / 2
         + keyIcone.getGlobalBounds().height * keyIcone.getScale().y);
 
-        bombIcone.setPosition(keyIcone.getPosition().x + (float)view.getSize().x - (bombIcone.getLocalBounds().width * bombIcone.getScale().x)*2, keyIcone.getPosition().y);
+        bombIcone.setPosition(keyIcone.getPosition().x + /*(float)*/view.getSize().x - (bombIcone.getLocalBounds().width * bombIcone.getScale().x)*2.2f, keyIcone.getPosition().y);
         heartIcone.setPosition(keyIcone.getPosition().x, keyIcone.getPosition().y + (float)view.getSize().y - heartIcone.getLocalBounds().height * bombIcone.getScale().y);
         //TIMER UPDATE
         
@@ -393,22 +406,25 @@ void Game::drawAll() {
                         if (obj->breakableWall) obj->sprite.setTexture(breakableWallTexture);
                         else { obj->sprite.setTexture(wallTexture); }
                     }
-                    if (obj->type == "wallDebris") obj->sprite.setTexture(wallDebrisTexture);
-                    else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
-                    else if (obj->type == "pnj")
-                    {
-                        obj->sprite.setTexture(pnjTexture);
-                        pnjSprite = obj->sprite;
-                    }
-                    else if (obj->type == "checkpoint") { 
-                        if (obj->sprite.getPosition() == player.checkpoint) {
-                            obj->sprite.setTexture(checkpointOnTexture);
+                    else {
+                        if (obj->breakableWall) throw std::runtime_error("Erreur : Objet different de mur cassable. Veuillez l'initialiser en breakable = false.");
+                        if (obj->type == "wallDebris") obj->sprite.setTexture(wallDebrisTexture);
+                        else if (obj->type == "floor") obj->sprite.setTexture(floorTexture);
+                        else if (obj->type == "pnj")
+                        {
+                            obj->sprite.setTexture(pnjTexture);
+                            pnjSprite = obj->sprite;
                         }
-                        else {
-                            obj->sprite.setTexture(checkpointTexture);
+                        else if (obj->type == "checkpoint") {
+                            if (obj->sprite.getPosition() == player.checkpoint) {
+                                obj->sprite.setTexture(checkpointOnTexture);
+                            }
+                            else {
+                                obj->sprite.setTexture(checkpointTexture);
+                            }
                         }
+                        else if (obj->type == "lock") obj->sprite.setTexture(lockTexture);
                     }
-                    else if (obj->type == "lock") obj->sprite.setTexture(lockTexture);
                     window.draw(obj->sprite);
                 }
             }
@@ -507,7 +523,7 @@ void Game::loadTextures() {
     retryText.setString("RETRY");
     retryText.setCharacterSize(50);
     retryText.setPosition(((float)window.getSize().x - retryText.getGlobalBounds().width) / 2,
-        gameOverText.getPosition().y + gameOverText.getCharacterSize() + (float)window.getSize().y * 0.1);
+        gameOverText.getPosition().y + gameOverText.getCharacterSize() + (float)window.getSize().y * 0.1f);
     retryText.setFillColor(sf::Color::White);
 
     menuText.setFont(baseFont);
@@ -522,13 +538,13 @@ void Game::loadTextures() {
     reprendreText.setFont(baseFont);
     reprendreText.setString("REPRENDRE");
     reprendreText.setCharacterSize(75);
-    reprendreText.setPosition(((float)window.getSize().x - reprendreText.getGlobalBounds().width) / 2, ((float)window.getSize().y - reprendreText.getCharacterSize()) / 2.5);
+    reprendreText.setPosition(((float)window.getSize().x - reprendreText.getGlobalBounds().width) / 2.f, ((float)window.getSize().y - reprendreText.getCharacterSize()) / 2.5f);
     reprendreText.setFillColor(sf::Color::White);
 
     optionText.setFont(baseFont);
     optionText.setString("OPTIONS");
     optionText.setCharacterSize(50);
-    optionText.setPosition(((float)window.getSize().x - optionText.getGlobalBounds().width) / 2, menuText.getPosition().y - optionText.getCharacterSize() *1.5);
+    optionText.setPosition(((float)window.getSize().x - optionText.getGlobalBounds().width) / 2.f, menuText.getPosition().y - optionText.getCharacterSize() *1.5f);
     optionText.setFillColor(sf::Color::White);
 
     player.bombText.setFont(baseFont);
@@ -564,19 +580,6 @@ void Game::loadTextures() {
     explosionSound.setVolume(10);
 }
 
-//void Game::setupSpawns() {
-//    enemies.emplace_back(std::make_unique<ChaserEnemy>(700, 700));
-//    enemies.emplace_back(std::make_unique<PatrollingEnemy>(500, 500));
-//    enemies.emplace_back(std::make_unique<PatrollingEnemy>(300, 300));"
-//    enemies.emplace_back(std::make_unique<PatrollingEnemy>(900, 200));
-//
-//    objects.emplace_back(std::make_unique<Potion>());
-//    objects.emplace_back(std::make_unique<Key>());
-//    for (auto& obj : objects) {
-//        obj->sprite.setPosition(rand() % window.getSize().x * 0.9, rand() % window.getSize().y * 0.9);
-//    }
-//}
-
 void Game::reset() {
 
     deltaTime = Clock.restart().asSeconds();
@@ -589,8 +592,11 @@ void Game::reset() {
 }
 
 void Game::run() {
+    musicSound.openFromFile("assets/main music.wav");
+    musicSound.setVolume(10);
+    musicSound.play();
+    musicSound.setLoop(true);
     showMenu();
     loadTextures();
-    //setupSpawns();
     gameLoop();
 }

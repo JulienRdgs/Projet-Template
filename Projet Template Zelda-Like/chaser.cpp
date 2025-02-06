@@ -21,8 +21,8 @@ void ChaserEnemy::behavior(float& deltaTime, sf::View& view, std::vector<std::ve
 		- sprite.getLocalBounds().width * sprite.getScale().x
 		- sprite.getLocalBounds().height * sprite.getScale().y) / 4;
 
-	if (abs(player.sprite.getPosition().x - sprite.getPosition().x) < view.getSize().x /1.7
-		&& abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y /1.7) {
+	if (abs(player.sprite.getPosition().x - sprite.getPosition().x) < view.getSize().x /3
+		&& abs(player.sprite.getPosition().y - sprite.getPosition().y) < view.getSize().y /3) {
 
 		if (posX > playerPosX) {
 			sprite.move(-speedX * deltaTime, 0);

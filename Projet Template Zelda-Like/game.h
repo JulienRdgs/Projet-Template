@@ -81,7 +81,6 @@ public:
 	Game(std::vector<sf::VideoMode> modes);
 
 	void loadTextures();
-	//void setupSpawns();
 	void gameLoop();
 	void pollEvent();
 	void showMenu();

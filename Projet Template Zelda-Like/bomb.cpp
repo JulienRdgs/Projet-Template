@@ -19,4 +19,4 @@ bool Bomb::interact(sf::Sprite& playerSprite, std::vector<std::shared_ptr<Intera
 		return true;
 	}
 	else { return false; }
-} 
+}

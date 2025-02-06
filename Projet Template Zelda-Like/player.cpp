@@ -136,7 +136,7 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
     hpText.setPosition(sprite1.getPosition().x + (sprite1.getLocalBounds().width * sprite1.getScale().x) * 1.2,
         sprite1.getPosition().y /*+ (sprite1.getLocalBounds().height * sprite1.getScale().y) /2 - hpText.getCharacterSize() /2*/);
     window.draw(hpText);
-}
+    }
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
     std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies, sf::Sound& slashSound) {

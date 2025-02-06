@@ -11,8 +11,8 @@ class Enemy;
 
 class Player : public Entity {
 public:
-	int hp = 100;
-	int hpMax = 100;
+	float hp = 100;
+	float hpMax = 100;
 	sf::Text hpText;
 	float atk = 10;
 	float bombAtk = atk * 3;
@@ -30,6 +30,7 @@ public:
 
 	std::vector<std::shared_ptr<Interactable>> inventaire;
 	int bombCount = 0;
+	int bombCountMax = 5;
 	sf::Text bombText;
 	float bombThrowTimer = 0;
 	float bombThrowCooldown = 2;
