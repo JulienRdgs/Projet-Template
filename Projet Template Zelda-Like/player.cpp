@@ -24,6 +24,9 @@ Player::Player() {
     attackHitbox.setSize(sf::Vector2f(60.f, 25.f));
     attackHitbox.setFillColor(sf::Color(255, 0, 0, 150));
     attackHitbox.setOrigin(attackHitbox.getSize().x / 2, attackHitbox.getSize().y / 2);
+
+    attackCooldown = 1.f;
+    attackCooldownTimer = 0;
 }
 void Player::update(float deltaTime) {
     if (hp > hpMax) hp = hpMax;
@@ -33,6 +36,11 @@ void Player::update(float deltaTime) {
         if (attackTimer <= 0) {
             isAttacking = false;
         }
+    }
+
+    if (attackCooldownTimer > 0)
+    {
+        attackCooldownTimer -= deltaTime;
     }
 
     sword1.setPosition(sprite.getPosition() + swordOffset);
@@ -132,10 +140,11 @@ void Player::draw(sf::RenderWindow& window, sf::Sprite& sprite1, sf::Sprite& spr
 
 void Player::handleInput(float deltaTime, sf::RenderWindow& window, sf::Sprite wall,
     std::vector<std::vector<std::unique_ptr<MapEntities>>>& walls, sf::View& view, std::vector<std::unique_ptr<Enemy>>& enemies, sf::Sound& slashSound) {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !isAttacking && attackCooldownTimer <= 0) {
         slashSound.play();
         isAttacking = true;
         attackTimer = attackDuration;
+        attackCooldownTimer = attackCooldown;
 
         mousePos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         playerPos = sprite.getPosition();

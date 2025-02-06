@@ -49,6 +49,9 @@ public:
 	sf::Vector2f attackOffset;
 	sf::Vector2f swordOffset;
 
+	float attackCooldown;
+	float attackCooldownTimer;
+
 	sf::Vector2f mousePos = { 0,0 };
 	sf::Vector2f playerPos = { 0,0 };
 	sf::Vector2f direction = { 0,0 };
